@@ -1,0 +1,7 @@
+flask
+pytest
+pytest-cov
+pytest-mock
+coverage
+twilio
+jsonify
