@@ -2,7 +2,7 @@ name: Workflow A01352283
 
 on:
   push:
-    branches: [ main ]
+    branches: [ A01352283 ]
   pull_request:
     branches: [ main ]
 
