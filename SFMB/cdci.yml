@@ -1,0 +1,31 @@
+name: CDCI
+
+on: 
+  push:
+    branches: [ A01029956 ] # Should be the main branch
+  pull_request:
+    branches: [ main ]
+
+jobs:
+# 1
+  linting:
+    runs-on: ubuntu-latest
+# 2
+  unit_tests:
+    runs-on: ubuntu-latest
+   
+
+# 3
+  compiling_package:
+    runs-on: ubuntu-latest
+    needs: [linting, unit_tests]
+
+# 4
+  image_compiling:
+    runs-on: ubuntu-latest
+    needs: compiling_package
+
+# 5
+  image_insersion:
+    runs-on: ubuntu-latest
+    needs: [ image_compiling, compiling_package ]
