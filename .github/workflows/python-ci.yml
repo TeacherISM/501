@@ -5,6 +5,9 @@ on:
     branches:
       - A01633010
 
+env:
+  ECR_URL: "public.ecr.aws/d0z3f1c0/501ecr"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -73,8 +76,4 @@ jobs:
 
 
       - name: Build Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: false
-          tags: python-aws:latest
+        run: docker build -t myimage FDSC
