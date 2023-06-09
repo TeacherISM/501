@@ -5,10 +5,10 @@ name: Sum Lambda Deployment
 on:
   push:
     branches:
-      - mainTest
+      - main
   pull_request:
     branches:
-      [mainTest, A01029746]
+      [main, A01029746]
     
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: '18.x'
-            - name: Install dependencies
+            - name: Install Dependencies and Lint
               working-directory: ./SGV/lambda
               run: |
                     npm install
@@ -35,7 +35,7 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: '18.x'
-            - name: Test Code
+            - name: Test Code and Generate Coverage Report
               working-directory: ./SGV/lambda
               run: |
                      npm install

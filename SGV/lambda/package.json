@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "package": "zip -r lambda.zip .",
     "build": "babel ./lambda -d dist",
-    "eslint-output": "eslint-output -f stylish -o eslint-output.html"
+    "eslint-output": "eslint . --output-file eslint-report.html --format html"
   },
   "author": "",
   "license": "ISC",
@@ -19,8 +19,8 @@
     "@babel/preset-env": "^7.22.4",
     "babel-jest": "^29.5.0",
     "eslint": "^8.42.0",
-    "eslint-output": "^3.0.1",
-    "jest": "^29.5.0"
+    "jest": "^29.5.0",
+    "jest-html-reporters": "^3.1.4"
   },
   "dependencies": {
     "zip": "^1.2.0"
