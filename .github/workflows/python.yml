@@ -2,7 +2,8 @@ name: Python App
 
 on:
   push:
-    branches: ["*"]
+    branches:
+      - mainTestGina
   pull_request:
     branches: ["*"]
 
@@ -61,9 +62,6 @@ jobs:
 
   package:
     runs-on: ubuntu-latest
-
-    if: ${{ github.event_name == 'push' }}
-
     needs: test
     
     steps:
@@ -89,9 +87,6 @@ jobs:
           
   dockerize:
     runs-on: ubuntu-latest
-
-    if: ${{ github.event_name == 'push' }}
-
     needs: package
     steps:
       - name: Checkout
@@ -149,9 +144,6 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-
-    if: ${{ github.event_name == 'push' }}
-    
     needs: dockerize
     steps:
       - name: Set up Docker Buildx
