@@ -142,5 +142,3 @@ jobs:
           docker load --input /tmp/$IMAGE_TAG.tar
           docker image ls -a
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v2
