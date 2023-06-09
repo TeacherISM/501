@@ -51,7 +51,7 @@ jobs:
             - name: Test with pytest
               run: |
                 RUN_ENV=dev
-                coverage run -m test_addNums ggp/test
+                coverage run -m pytest ggp/test
                 coverage report
                 coverage html -d cc_report/
 
@@ -71,7 +71,7 @@ jobs:
                 pip install flake8 pytest
                 if [ -f ggp/requirements.txt ]; then pip install -r ggp/requirements.txt; fi
             - name: Package
-              run: zip -r lambdaF.zip ggp/python -x '*.git*'
+              run: zip -r lambdaF.zip ggp/lambda_f -x '*.git*'
             
     dockerize:
         needs: package
