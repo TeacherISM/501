@@ -99,7 +99,7 @@ jobs:
                 ECR_REPOSITORY: d0z3f1c0/501ecr
                 IMAGE_TAG: A01029422-latest
               with:
-                context: ./python
+                context: ./ggp
                 tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
                 outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
             - name: Save image
