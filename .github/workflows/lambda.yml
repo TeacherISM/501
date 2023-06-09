@@ -1,0 +1,153 @@
+name: Lambda function CI/CD
+
+on: 
+    push: 
+        branches: ["main"]
+    pull_request: 
+        branches: ["main"]
+
+jobs:
+    linting:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
+          
+          - name: Setting de python 3.10
+            uses: actions/setup-python@v3
+            with:
+              python-version: "3.10"
+
+          - name: Instalar dependencias (requirements.txt)
+            run: |
+              python -m pip install --upgrade pip
+              pip install flake8
+              if [ -f python3/requirements.txt ]; then pip install -r python3/requirements.txt; fi
+
+          - name: Linteo con flake8
+            run: |
+              flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+              flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    pruebas_unitarias:
+        runs-on: ubuntu-latest
+
+        steps:
+          - uses: actions/checkout@v3
+
+          - name: Setting de python 3.10
+            uses: actions/setup-python@v3
+            with:
+              python-version: "3.10"
+
+          - name: Instalar dependencias (requirements.txt)
+            run: |
+              python -m pip install --upgrade pip
+              pip install pytest coverage
+              if [ -f python3/requirements.txt ]; then pip install -r python3/requirements.txt; fi
+
+          - name: Pruebas con pytest
+            run: |
+              coverage run -m pytest APKZ/lambda_function/test.py
+              coverage report
+              coverage html -d cc_report/
+
+    paquete_compilacion:
+        needs: [linting, pruebas_unitarias]
+        runs-on: ubuntu-latest
+
+        steps:
+          - uses: actions/checkout@v3
+
+          - name: Set up Python 3.10
+            uses: actions/setup-python@v3
+            with:
+              python-version: "3.10"
+
+          - name: Empaquetado de la funcion
+            run: |
+                zip -r funcion_empaquetada.zip .
+          
+          - name: Revisar si existe el paquete
+            run: |
+                unzip -o funcion_empaquetada.zip
+    compilar_img_docker:
+        needs: paquete_compilacion
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v3
+                      
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v2
+                      
+          - name: Configuracion de credenciales de aws
+            uses: aws-actions/configure-aws-credentials@v1
+            with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: us-east-1
+
+          - name: Login a Amazon ECR
+            id: login-ecr
+            uses: aws-actions/amazon-ecr-login@v1
+            with:
+                  registry-type: public
+                      
+          - name: Build y tageo de imagen
+            uses: docker/build-push-action@v4
+            env:
+              ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+              ECR_REPOSITORY: d0z3f1c0/501ecr
+              IMAGE_TAG: A01025303-latest
+            with:
+              context: ./APKZ
+              tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+              outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
+                     
+          - name: Save image
+            uses: actions/upload-artifact@v3
+            env:
+              IMAGE_TAG: A01025303-latest
+            with:
+              name: ${{ env.IMAGE_TAG }}
+              path: /tmp/${{ env.IMAGE_TAG }}.tar
+
+    insertar_img_ecr:
+        runs-on: ubuntu-latest
+        needs: [paquete_compilacion, compilar_img_docker]
+        steps:
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v2
+
+          - name: Read artifact
+            uses: actions/download-artifact@v3
+            env:
+                IMAGE_TAG: A01025303-latest
+            with:
+                name: ${{ env.IMAGE_TAG }}
+                path: /tmp
+
+          - name: Configure AWS credentials
+            uses: aws-actions/configure-aws-credentials@v1
+            with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: us-east-1
+
+          - name: Login to Amazon ECR
+            id: login-ecr
+            uses: aws-actions/amazon-ecr-login@v1
+            with:
+              registry-type: public
+
+          - name: Deploy image
+            env:
+              ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+              ECR_REPOSITORY: d0z3f1c0/501ecr
+              IMAGE_TAG: A01025303-latest
+            run: |
+              docker load --input /tmp/$IMAGE_TAG.tar
+              docker image ls -a
+              docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+              
