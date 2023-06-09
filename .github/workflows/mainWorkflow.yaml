@@ -99,7 +99,7 @@ jobs:
               env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: d0z3f1c0/501ecr
-                IMAGE_TAG: A01029422
+                IMAGE_TAG: a01029422
               with:
                 context: ./ggp
                 file: ./ggp/docker/Dockerfile
@@ -108,7 +108,7 @@ jobs:
             - name: Save image
               uses: actions/upload-artifact@v3
               env:
-                IMAGE_TAG: A01029422
+                IMAGE_TAG: a01029422
               with:
                 name: ${{ env.IMAGE_TAG }}
                 path: /tmp/${{ env.IMAGE_TAG }}.tar
@@ -122,7 +122,7 @@ jobs:
             - name: Read artifact
               uses: actions/download-artifact@v3
               env:
-                IMAGE_TAG: A01029422
+                IMAGE_TAG: a01029422
               with:
                 name: ${{env.IMAGE_TAG}}
                 path: /tmp
@@ -141,7 +141,7 @@ jobs:
               env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: d0z3f1c0/501ecr
-                IMAGE_TAG: A01029422
+                IMAGE_TAG: a01029422
               run: |
                 docker load --input /tmp/${{ env.IMAGE_TAG }}.tar
                 docker image ls -a
