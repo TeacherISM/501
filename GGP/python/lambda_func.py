@@ -1,6 +1,6 @@
 
 #lambda function to add two numbers
-def add():
+def addNums():
     return (1+1)
 
 #print(add())
