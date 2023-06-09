@@ -41,19 +41,22 @@ jobs:
           pip install pytest coverage
           if [ -f FDSC/requirements.txt ]; then pip install -f FDSC/requirements.txt; fi
 
-      - name: Testing
+      - name: Testing and Coverage Report
         run: |
           coverage run -m pytest FDSC/test.py
           coverage report
-          coverage html -d cc_report/
+          coverage html -d test_reports/coverage/
 
   build_package:
+    if: github.event_name == 'pull_request'
     needs: unit_tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build distribution tarball
+      - name: Build distribution tar ball
         run: tar -czvf app.tar.gz FDSC/
+
+
 
 
