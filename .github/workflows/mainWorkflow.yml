@@ -71,7 +71,7 @@ jobs:
                 pip install flake8 pytest
                 if [ -f ggp/requirements.txt ]; then pip install -r ggp/requirements.txt; fi
             - name: Package
-              run: zip -r lambdaF.zip ggp/addFunc -x '*.git*'
+              run: zip -r lambdaF.zip ggp/lambda_func.py -x '*.git*'
             
     dockerize:
         needs: package
