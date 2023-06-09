@@ -142,11 +142,31 @@ jobs:
           docker load --input /tmp/$IMAGE_TAG.tar
           docker image ls -a
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      - name: Deploy image with the other tag
+          - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+      - name: Read artifact for other version
+        uses: actions/download-artifact@v3
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: latest
+        with:
+          name: ${{ env.IMAGE_TAG }}
+          path: /tmp
+      - name: Configure AWS credentials for other version
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR for other version
+        id: login-ecr-again
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+      - name: Deploy image for other version
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr-again.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
-          IMAGE_TAG: "latest"
+          IMAGE_TAG: latest
         run: |
           docker load --input /tmp/$IMAGE_TAG.tar
           docker image ls -a
