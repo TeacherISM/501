@@ -102,7 +102,7 @@ jobs:
                 IMAGE_TAG: A01029422
               with:
                 context: ./ggp
-                file: ./ggp/Docker/Dockerfile
+                file: ./ggp/docker/Dockerfile
                 tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
                 outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
             - name: Save image
