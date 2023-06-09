@@ -65,8 +65,9 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Create ZIP FILE
+        working-directory: ./AP/app/
         run: |
-          zip my-deployment-package.zip ./src/main.py
+          zip my-deployment-package.zip .src/main.py
   dockerize:
     runs-on: ubuntu-latest
     needs: package
