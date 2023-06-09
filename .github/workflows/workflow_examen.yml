@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  Build:
+  Lint:
     runs-on: ubuntu-latest
     #if: ${{ github.event.pull_request.base.ref == 'main' }}
 
