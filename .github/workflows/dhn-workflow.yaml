@@ -118,8 +118,7 @@ jobs:
           tags: |
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG_1 }}
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG_2 }}_${{env.IMAGE_TAG_1}}
-          outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG_1 }}_${{ env.IMAGE_TAG_2 }}.tar
-
+            
       - name: Save image
         uses: actions/upload-artifact@v3
         env:
