@@ -95,8 +95,8 @@ jobs:
         uses: docker/build-push-action@v4
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: c4h6g9h4/test-repository-ecr
-          IMAGE_TAG: DCP
+          ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+          IMAGE_TAG: A01781631
         with:
           context: ./DCP
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
@@ -104,7 +104,7 @@ jobs:
       - name: Save image
         uses: actions/upload-artifact@v3
         env:
-          IMAGE_TAG: DCP
+          IMAGE_TAG: A01781631
         with:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp/${{ env.IMAGE_TAG }}.tar
@@ -118,7 +118,7 @@ jobs:
       - name: Read artifact
         uses: actions/download-artifact@v3
         env:
-          IMAGE_TAG: DCP
+          IMAGE_TAG: A01781631
         with:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp
@@ -136,8 +136,17 @@ jobs:
       - name: Deploy image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: c4h6g9h4/test-repository-ecr
-          IMAGE_TAG: DCP
+          ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+          IMAGE_TAG: A01781631
+        run: |
+          docker load --input /tmp/$IMAGE_TAG.tar
+          docker image ls -a
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Deploy image with the other tag
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+          IMAGE_TAG: "latest"
         run: |
           docker load --input /tmp/$IMAGE_TAG.tar
           docker image ls -a
