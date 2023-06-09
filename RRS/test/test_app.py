@@ -4,7 +4,9 @@ import sys
 sys.path.append('../src')
 
 class AppTest(TestCase):
-    def test_home(self):
-        result = app.handler(4, 5)
-        self.assertEqual(result, 9)
+   def test_lambda_handler(capsys):
+    event = {'x': 3, 'y': 5}
+    app.lambda_handler(event, None)
+    captured = capsys.readouterr()
+    assert captured.out == '8\n'
 
