@@ -1,7 +1,7 @@
 from src import app
 from unittest import TestCase
 import sys
-sys.path.append('..')
+sys.path.append('../src')
 
 
 class AppTest(TestCase):
