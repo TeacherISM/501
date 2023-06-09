@@ -76,4 +76,4 @@ jobs:
 
 
       - name: Build Docker image
-        run: docker build -t myimage
+        run: docker build -t myimage .
