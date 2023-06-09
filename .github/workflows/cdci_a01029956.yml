@@ -59,7 +59,7 @@ jobs:
       - name: Zip
         run: |
           RUN_ENV=dev
-          zip app.zip python3/src/app.py
+          zip app.zip SFMB/src/app.py
 # 4
   image_compiling:
     runs-on: ubuntu-latest
