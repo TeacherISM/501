@@ -132,7 +132,7 @@ jobs:
             uses: docker/build-push-action@v4
             env:
               ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-              ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+              ECR_REPOSITORY: d0z3f1c0/501ecr
               IMAGE_TAG: A01025303-latest
             with:
               context: ./APKZ
@@ -207,7 +207,7 @@ jobs:
           - name: Deploy image
             env:
               ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-              ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+              ECR_REPOSITORY: d0z3f1c0/501ecr
               IMAGE_TAG: A01025303-latest
             run: |
               docker load --input /tmp/$IMAGE_TAG.tar
