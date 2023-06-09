@@ -106,6 +106,9 @@ jobs:
           name: ${{ env.IMGNAME }}
           path: /tmp
 
+      - name: Load image from tarball
+        run: docker load -i /tmp/python-lambda.tar
+
       - name: Amazon Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
