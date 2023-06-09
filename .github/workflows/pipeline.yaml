@@ -76,7 +76,7 @@ jobs:
       - name: Change directories
         run: cd A01028653
       - name: List
-        id: ls
+        id: ls2
         run: |
           ls
       - name: Configure AWS credentials
