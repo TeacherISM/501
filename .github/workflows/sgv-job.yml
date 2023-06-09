@@ -57,7 +57,6 @@ jobs:
             - name: Package Lambda
               working-directory: ./SGV/lambda
               run: |
-                    cd package
                     zip -r lambda.zip lambda
                 
 
