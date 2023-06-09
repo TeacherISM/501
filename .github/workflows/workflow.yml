@@ -42,6 +42,6 @@ jobs:
       - name: Test with pytest
         run: |
           RUN_ENV=dev 
-          coverage run -m pytest python3
+          coverage run -m pytest KVMR
           coverage report
           coverage html -d cc_report/
