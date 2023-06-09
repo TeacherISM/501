@@ -1,5 +1,5 @@
 import pytest
-from ggp import lambda_func
+import lambda_func
 
 # Test coverage
 def test_addNums():
