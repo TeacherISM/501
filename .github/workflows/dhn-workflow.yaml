@@ -57,13 +57,12 @@ jobs:
       - name: Run pytest
         run: |
           pytest --cov=DHN --cov-report=xml
-  
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
           path: ./coverage.xml
-  
 
   package:
     name: Package
@@ -171,6 +170,6 @@ jobs:
           IMAGE_TAG1: A01025276
           IMAGE_TAG2: latest
         run: |
-          docker load --input /tmp/$IMAGE_TAG1_$IMAGE_TAG2.tar
+          docker load --input /tmp/${{env.IMAGE_TAG1}}_${{env.IMAGE_TAG2}}.tar
           docker image ls -a
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1:$IMAGE_TAG2
