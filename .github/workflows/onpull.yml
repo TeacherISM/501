@@ -2,7 +2,7 @@ name: Pull check
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "A01025459" ]
 
 jobs:
   linting:
