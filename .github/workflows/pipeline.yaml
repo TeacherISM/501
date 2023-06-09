@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - A01028653
+  pull_request:
+    types: [opened]
 
 jobs:
   lint:
@@ -32,10 +34,16 @@ jobs:
         run: npm install --prefix A01028653
       - name: Run Jest test suite
         run: npm test --prefix A01028653
+      - name: Save Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}report.json
+          path: ./A01028653/coverage/coverage-final.json
 
   package:
     needs: [lint, test]
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request }}
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 14.x
@@ -57,6 +65,7 @@ jobs:
   dockerize:
     needs: [package]
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request }}
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -109,6 +118,7 @@ jobs:
   push:
     needs: [dockerize, package]
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request }}
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
