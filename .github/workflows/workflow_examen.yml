@@ -12,6 +12,7 @@ permissions:
 jobs:
   Build:
     runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' }}
 
     steps:
       - uses: actions/checkout@v3
@@ -35,6 +36,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
   Test:
     runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' }}
     needs: Build
 
     steps:
