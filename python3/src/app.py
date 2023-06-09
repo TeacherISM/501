@@ -1,20 +1,9 @@
-"""  
-import os
-import json 
-
-def lambda_handler(event, context):
-    json_region = os.environ['AWS_REGION']
-    json_suma = lambda a,b :  a+b
-    return  json_suma
-"""
 import logging
-import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
-    json_region = os.environ['AWS_REGION']
     ...
     result = None
     action = event.get('action')
@@ -30,3 +19,16 @@ def lambda_handler(event, context):
     "action": "increment",
     "number": 3
 }
+
+def lambda_handler(event, context):
+    # Get the numbers from the event payload
+    numbers = event['numbers']
+    
+    # Sum up the numbers
+    total = sum(numbers)
+    
+    # Return the result
+    return {
+        'statusCode': 200,
+        'body': total
+    }

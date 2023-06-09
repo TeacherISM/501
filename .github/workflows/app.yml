@@ -46,8 +46,6 @@ jobs:
           pip install pytest
           if [ -f python3/requirements.txt ]; then pip install -r python3/requirements.txt; fi
       - name: Test with pytest
-        env:
-          AWS_REGION: us-east-1
         run: |
           RUN_ENV=dev
           coverage run -m pytest python3/test/
