@@ -132,7 +132,6 @@ jobs:
         with:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp/${{ env.IMAGE_TAG }}.tar
-
   deploy:
     if: github.event_name == 'push'
     name: Insercion de la imagen de Docker en ECR
@@ -161,11 +160,20 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           registry-type: public
-      - name: Deploy image
+      - name: Deploy image A01025076
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
-          IMAGE_TAG: "A01025076_latest"
+          IMAGE_TAG: A01025076
+        run: |
+          docker load --input /tmp/$IMAGE_TAG.tar
+          docker image ls -a
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Deploy image A01025076_latest
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: A01025076_latest
         run: |
           docker load --input /tmp/$IMAGE_TAG.tar
           docker image ls -a
