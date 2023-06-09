@@ -38,12 +38,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
+          pip install pytest coverage
           if [ -f FDSC/requirements.txt ]; then pip install -f FDSC/requirements.txt; fi
 
       - name: Testing
-        run: pytest FDSC/test.py
-        
+        run: |
+          coverage run -m pytest FDSC/test.py
+          coverage report
+          coverage html -d cc_report/
+
   build_package:
     needs: unit_tests
     runs-on: ubuntu-latest
@@ -51,5 +54,6 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build distribution tarball
-        run: tar -czvf app.tar.gz FDSC
+        run: tar -czvf app.tar.gz FDSC/
+
 
