@@ -97,7 +97,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry-type: public
+          registry: public.ecr.aws/d0z3f1c0
       - name: Build and tag image
         uses: docker/build-push-action@v4
         env:
@@ -105,7 +105,7 @@ jobs:
           ECR_REPOSITORY: d0z3f1c0/demo-repository-ecr
           IMAGE_TAG: A01284329
         with:
-          context: ./python3
+          context: ./RRS
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
       - name: Save image
