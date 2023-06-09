@@ -1,0 +1,167 @@
+name: Examen
+
+on: 
+  push:
+    branches: [ "A01025459" ]
+  
+permissions:
+  contents: read
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python_3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+        if [ -f TRH/requirements.txt ]; then pip install -r TRH/requirements.txt; fi
+    - name: Linting
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  pruebas_unitarias:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python_3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        if [ -f TRH/requirements.txt ]; then pip install -r TRH/requirements.txt; fi
+    - name: Ejecutar pruebas unitarias
+      run: |
+        RUN_ENV=dev
+        coverage run -m pytest TRH/
+        coverage report
+        coverage html -d cc_report/
+
+  paquete_de_compilacion:
+    runs-on: ubuntu-latest
+    needs: [linting, pruebas_unitarias]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python_3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Empaquetado en ZIP
+      run: |
+        RUN_ENV=dev
+        zip trh-package.zip TRH/src/app.py
+
+  compilacion_Docker:
+    runs-on: ubuntu-latest
+    needs: paquete_de_compilacion
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configurar Docker
+      uses: docker/setup-buildx-action@v2
+    - name: Credenciales de Amazon
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - name: LogIn Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registry-type: public
+    - name: Imagen
+      uses: docker/build-push-action@v4
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: d0z3f1c0/501ecr
+        IMAGE_TAG: A01025459
+      with:
+        context: ./TRH
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+        outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
+    - name: Guardar imagen
+      uses: actions/upload-artifact@v3
+      env:
+        IMAGE_TAG: A01025459
+      with:
+        name: ${{ env.IMAGE_TAG }}
+        path: /tmp/${{ env.IMAGE_TAG }}.tar
+    - name: Imagen 2
+      uses: docker/build-push-action@v4
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: d0z3f1c0/501ecr
+        IMAGE_TAG: A01025459-latest
+      with:
+        context: ./TRH
+        tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+        outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
+    - name: Guardar imagen 2
+      uses: actions/upload-artifact@v3
+      env:
+        IMAGE_TAG: A01025459-latest
+      with:
+        name: ${{ env.IMAGE_TAG }}
+        path: /tmp/${{ env.IMAGE_TAG }}.tar
+
+  docker_despliegue:
+    runs-on: ubuntu-latest
+    needs: [compilacion_Docker, paquete_de_compilacion]
+    steps:
+    - name: Configurar Docker
+      uses: docker/setup-buildx-action@v2
+    - name: Read artifact
+      uses: actions/download-artifact@v3
+      env:
+        IMAGE_TAG: A01025459
+      with:
+        name: ${{ env.IMAGE_TAG }}
+        path: /tmp
+    - name: Read artifact 2
+      uses: actions/download-artifact@v3
+      env:
+        IMAGE_TAG: A01025459-latest
+      with:
+        name: ${{ env.IMAGE_TAG }}
+        path: /tmp
+    - name: Credenciales de Amazon
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - name: LogIn Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registry-type: public
+    - name: Desplegar Imagen
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: d0z3f1c0/501ecr
+        IMAGE_TAG: A01025459
+      run: |
+        docker load --input /tmp/$IMAGE_TAG.tar
+        docker image ls -a
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    - name: Desplegar Imagen 2
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: d0z3f1c0/501ecr
+        IMAGE_TAG: A01025459-latest
+      run: |
+        docker load --input /tmp/$IMAGE_TAG.tar
+        docker image ls -a
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    
