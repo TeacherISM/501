@@ -97,7 +97,7 @@ jobs:
           IMAGE_TAG: A01024927
         with:
             context: ./AISR
-            tags: ${{ env.URI_REPOSITORY }}-${{ env.IMAGE_TAG }}
+            tags: ${{ env.IMAGE_TAG }}
             outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
 
       - name: Save image 1
@@ -115,7 +115,7 @@ jobs:
           IMAGE_TAG: latest
         with:
             context: ./AISR
-            tags: ${{ env.URI_REPOSITORY }}-${{ env.IMAGE_TAG }}
+            tags: ${{ env.IMAGE_TAG }}
             outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
 
       - name: Save image 2
