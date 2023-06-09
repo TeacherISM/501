@@ -3,5 +3,4 @@ def sum_numbers(x, y):
 
 def lambda_handler(event, context):
     result = sum_numbers(event['x'], event['y'])
-    print(result)
     return result
