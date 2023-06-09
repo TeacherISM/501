@@ -97,7 +97,7 @@ jobs:
           IMAGE_TAG: A01024927
         with:
             context: ./AISR
-            tags: ${{ env.URI_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            tags: ${{ env.URI_REPOSITORY }}-${{ env.IMAGE_TAG }}
             outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
 
       - name: Save image 1
@@ -115,7 +115,7 @@ jobs:
           IMAGE_TAG: latest
         with:
             context: ./AISR
-            tags: ${{ env.URI_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            tags: ${{ env.URI_REPOSITORY }}-${{ env.IMAGE_TAG }}
             outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
 
       - name: Save image 2
@@ -170,7 +170,7 @@ jobs:
                 ECR_REPOSITORY: d0z3f1c0/501ecr
                 URI_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
                 IMAGE_TAG: A01024927
-                FINAL_IMG_TAG: ${{ env.URI_REPOSITORY }}:${{ env.IMAGE_TAG }}
+                FINAL_IMG_TAG: ${{ env.URI_REPOSITORY }}-${{ env.IMAGE_TAG }}
               run: |
                 docker load --input /tmp/$IMAGE_TAG.tar
                 docker image ls -a
@@ -183,7 +183,7 @@ jobs:
                 ECR_REPOSITORY: d0z3f1c0/501ecr
                 URI_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
                 IMAGE_TAG: latest
-                FINAL_IMG_TAG: ${{ env.URI_REPOSITORY }}:${{ env.IMAGE_TAG }}
+                FINAL_IMG_TAG: ${{ env.URI_REPOSITORY }}-${{ env.IMAGE_TAG }}
               run: |
                 docker load --input /tmp/$IMAGE_TAG.tar
                 docker image ls -a
