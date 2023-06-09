@@ -79,7 +79,7 @@ jobs:
               env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: d0z3f1c0/501ec
-                IMAGE_TAG: d0z3f1c0/501ec:A01029746
+                IMAGE_TAG: 501ec:A01029746
               with:
                 context: ./SGV/lambda
                 tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
@@ -87,7 +87,7 @@ jobs:
             - name: Save image
               uses: actions/upload-artifact@v3
               env:
-                IMAGE_TAG: d0z3f1c0/501ec:A01029746
+                IMAGE_TAG: 501ec:A01029746
               with:
                 name: ${{ env.IMAGE_TAG }}
                 path: /tmp/${{ env.IMAGE_TAG }}.tar
@@ -101,7 +101,7 @@ jobs:
             - name: Read artifact
               uses: actions/download-artifact@v3
               env:
-                IMAGE_TAG: d0z3f1c0/501ec:A01029746
+                IMAGE_TAG: 501ec:A01029746
               with:
                 name: ${{ env.IMAGE_TAG }}
                 path: /tmp
@@ -120,7 +120,7 @@ jobs:
               env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: d0z3f1c0/501ec
-                IMAGE_TAG: d0z3f1c0/501ec:A01029746
+                IMAGE_TAG: 501ec:A01029746
               run: |
                 docker load --input /tmp/$IMAGE_TAG.tar
                 docker image ls -a
