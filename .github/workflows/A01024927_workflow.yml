@@ -59,6 +59,7 @@ jobs:
   package:
     runs-on: ubuntu-latest
     needs: [unitTesting, linting]
+    if: github.event_name == 'push'
     
     steps:
       - uses: actions/checkout@v3
@@ -81,6 +82,7 @@ jobs:
   dockerize:
     runs-on: ubuntu-latest
     needs: package
+    if: github.event_name == 'push'
 
     steps:
       - name: Checkout repo
@@ -148,6 +150,7 @@ jobs:
   deploy:
           runs-on: ubuntu-latest
           needs: [dockerize, package]
+          if: github.event_name == 'push'
 
           steps:
             - name: Set up Docker Buildx
