@@ -75,8 +75,13 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      - name: Build Docker image
-        run: docker build -t python-lambda .
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: ${{ env.ECR_URL }}/python-lambda:A01633010,${{ env.ECR_URL }}/python-lambda:latest
+          outputs: type=docker,dest=/tmp/${{ env.IMGNAME }}.tar
 
       - name: Save to artifact
         uses: actions/upload-artifact@v3
