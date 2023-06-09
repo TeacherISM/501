@@ -139,6 +139,6 @@ jobs:
           IMAGE_TAG_LATEST: A01029956_latest
         run: |
           # Build the final image stage
-          docker build --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG_LATEST --file SFMB/Dockerfile SFMB
+          docker build --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG_LATEST .
           # Push the final image stage
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG_LATEST
