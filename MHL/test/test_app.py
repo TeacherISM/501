@@ -1,4 +1,3 @@
-import pytest
 from src import app
 
 def test_lambda_handler():
