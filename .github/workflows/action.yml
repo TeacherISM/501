@@ -30,7 +30,7 @@ jobs:
                flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
          - name: Test pytest
            run: |
-               RUN_ENV=dev
+               RUN_ENV=my_env
                coverage run -m pytest python3/test/
                coverage report
                coverage html -d cc_report/
