@@ -45,3 +45,30 @@ jobs:
           coverage run -m pytest KVMR
           coverage report
           coverage html -d cc_report/
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install flake8 pytest
+            if [ -f KVMR/requirements.txt ]; then pip install -r KVMR/requirements.txt; fi
+      - name: Package Lambda function
+        run: |
+          mkdir lambda_package
+          cp KVMR/app.py lambda_package/
+          cp KVMR/requirements.txt lambda_package/
+          cp KVMR/Dockerfile lambda_package/
+          cd lambda_package
+          zip -r ../lambda.zip .
+      - name: Publish Lambda ZIP artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: lambda-package
+          path: lambda.zip
