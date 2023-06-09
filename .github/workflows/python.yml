@@ -5,7 +5,9 @@ on:
     branches:
       - mainTestGina
   pull_request:
-    branches: ["*"]
+    branches: 
+      - mainTestGina
+
 
 jobs: 
   build_lint:
