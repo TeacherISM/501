@@ -85,13 +85,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: ECR Log In
-        uses: aws-actions/amazon-ecr-login@v1
+      - name: Amazon Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-region: ${{ env.ECR_REGION }}
-          registry: ${{ env.ECR_URL }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.ECR_REGION }}
+
+      - name: ECR Log In
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Docker Tagging
         run: |
