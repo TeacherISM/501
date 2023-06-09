@@ -57,13 +57,5 @@ jobs:
       - name: Build distribution tar ball
         run: tar -czvf app.tar.gz FDSC/
 
-  dockerize:
-    if: github.event_name != 'pull_request'
-    uses: actions/checkout@v3
-    
-  deploy_ecr:
-    if: github.event_name != 'pull_request'
-
-
 
 
