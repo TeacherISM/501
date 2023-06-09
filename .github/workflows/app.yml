@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
@@ -24,7 +24,8 @@ jobs:
           python python/src/app.py
           
 
-  test:
+
+  lint:
     runs-on: ubuntu-latest
     needs: build_app
     steps:
@@ -32,7 +33,7 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
@@ -47,9 +48,26 @@ jobs:
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics 
 
-      - name: Run tests with coverage to check for my name
+  pruebas-unitarias:
+    runs-on: ubuntu-latest
+    needs: build_app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r python/requirements.txt
+
+      - name: Run tests with coverage
         env: 
           AWS_REGION: us-east-1
         run: |
@@ -60,13 +78,15 @@ jobs:
 
   package:
     runs-on: ubuntu-latest
-    needs: test
+    needs: 
+      - pruebas-unitarias
+      - lint
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
@@ -105,10 +125,10 @@ jobs:
           registry-type: public
       
       - name: Build and tag
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         env: 
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: z0u5p2f3/exam-test
+          ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: A01751941
         with:
           context: ./python
@@ -157,7 +177,7 @@ jobs:
       - name: Finally deploy image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: z0u5p2f3/exam-test
+          ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: A01751941
         run: |
           docker load --input /tmp/${{ env.IMAGE_TAG }}.tar
