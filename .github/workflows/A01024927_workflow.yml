@@ -170,11 +170,11 @@ jobs:
                 ECR_REPOSITORY: d0z3f1c0/501ecr
                 URI_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
                 IMAGE_TAG: A01024927
-                FINAL_IMG_TAG: public.ecr.aws/d0z3f1c0/501ecr:A01024927
+                FINAL_IMG_TAG: ${{ env.URI_REPOSITORY }}:${{ env.IMAGE_TAG }}
               run: |
                 docker load --input /tmp/$IMAGE_TAG.tar
                 docker image ls -a
-                docker push $ECR_REGISTRY/$ECR_REPOSITORY:$FINAL_IMG_TAG
+                docker push $ECR_REGISTRY/$FINAL_IMG_TAG
                 
                 
             - name: Deploy image 2
@@ -187,6 +187,6 @@ jobs:
               run: |
                 docker load --input /tmp/$IMAGE_TAG.tar
                 docker image ls -a
-                docker push $ECR_REGISTRY/$ECR_REPOSITORY:$FINAL_IMG_TAG
+                docker push $ECR_REGISTRY/$FINAL_IMG_TAG
                 
      
