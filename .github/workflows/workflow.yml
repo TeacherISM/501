@@ -1,7 +1,7 @@
 name: Lambda Workflow A01025108
 on:
   push:
-    branches: ["*"]
+    branches: ["main"]
   pull_request:
     branches: ["*"]
 
