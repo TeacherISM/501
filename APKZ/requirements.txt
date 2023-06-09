@@ -1,4 +1,3 @@
+python_version==3.*
 coverage
 pytest
-python3
-pip3
