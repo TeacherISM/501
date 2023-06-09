@@ -52,7 +52,7 @@ jobs:
         
     - name: Test with pytest
       run: |
-        coverage run -m pytest AISR/
+        coverage run -m pytest AISR/src/test.py
         coverage report
         coverage html -d cc_report/
         
