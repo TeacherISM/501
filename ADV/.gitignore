@@ -1,0 +1,32 @@
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pyw
+*.egg-info/
+dist/
+build/
+*.egg
+*.log
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.code-workspace
+
+# Environment and Virtual Environments
+.venv/
+venv/
+env/
+pipenv/
+
+# Dependency management
+pip-lock.txt
+pipfile.lock
+
+# Miscellaneous
+*.swp
+.DS_Store
+Thumbs.db
