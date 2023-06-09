@@ -1,4 +1,11 @@
-def lambda_handler(event, context):
-    return "Luis Javier Karam"  # Return a string with my name :D
+def sum_numbers(a, b):
+    return a + b
 
-# This is the main function, it will be executed when the lambda is called
+def lambda_handler(event, context):
+    num1 = event.get('num1')
+    num2 = event.get('num2')
+
+    result = sum_numbers(num1, num2)
+    print(f"Sum: {result}")
+
+    return result
