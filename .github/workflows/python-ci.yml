@@ -2,7 +2,7 @@ name: Python CI/CD Exam
 
 on:
   push:
-    branches:["A01633010"]
+    branches: ["A01633010"]
 
 jobs:
   lint:
