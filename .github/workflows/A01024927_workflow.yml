@@ -94,16 +94,17 @@ jobs:
         uses: docker/build-push-action@v4
         env:
           URI_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
-          IMAGE_TAG: a01024927
+          IMAGE_TAG_DOCKER: a01024927
+          IMAGE_TAG: A01024927
         with:
             context: ./AISR
-            tags: ${{ env.IMAGE_TAG }}
+            tags: ${{ env.IMAGE_TAG_DOCKER }}
             outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
 
       - name: Save image 1
         uses: actions/upload-artifact@v3
         env:
-          IMAGE_TAG: a01024927
+          IMAGE_TAG: A01024927
         with:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp/${{ env.IMAGE_TAG }}.tar
@@ -138,7 +139,7 @@ jobs:
             - name: Read artifact for image 1
               uses: actions/download-artifact@v3
               env:
-                IMAGE_TAG: a01024927
+                IMAGE_TAG: A01024927
               with:
                 name: ${{ env.IMAGE_TAG }}
                 path: /tmp
