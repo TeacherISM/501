@@ -2,7 +2,9 @@ name: Linting | Pruebas | Paquete de compilacion | Docker | Despliegue
 
 on:
   push:
-    branches: ["A01025076"]
+    branches: 
+      - "A01025076"
+      - "main"
   pull_request:
     branches: ["*"]
 
