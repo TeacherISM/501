@@ -138,5 +138,5 @@ jobs:
         run: |
           docker load --input /tmp/a01028653.tar
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:a01028653
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:a01028653 $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:a01028653 $ECR_REGISTRY/$ECR_REPOSITORY:a01028653latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:a01028653latest
