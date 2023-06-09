@@ -1,0 +1,70 @@
+name: Examen
+
+on: 
+  push:
+    branches: [ "A01025459" ]
+  pull_request:
+    branches: [ "main" ]
+  
+permissions:
+  contents: read
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python_3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.10
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+        if [-f TRH/requirements.txt]; then pip install -r TRH/requirements.txt; fi
+    - name: Linting
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  pruebas_unitarias:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python_3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.10
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        if [-f TRH/requirements.txt]; then pip install -r TRH/requirements.txt; fi
+    - name: Ejecutar pruebas unitarias
+      run: |
+        RUN_ENV=dev
+        coverage run -m pytest TRH/test/
+        coverage report
+        coverage html -d cc_report/
+
+
+  paquete_de_compilacion:
+    runs-on: ubuntu-latest
+    needs: [linting, pruebas_unitarias]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python_3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.10
+    - name: Empaquetado en ZIP
+      run: |
+        RUN_ENV=dev
+        zip trh-package.zip TRH/src/app.py
+
+
+
+
