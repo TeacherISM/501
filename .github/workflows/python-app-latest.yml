@@ -4,10 +4,10 @@ on:
   push:
     branches: 
         - main
-        - A01781631
   pull_request:
     branches:
         - main
+        - A01781631
 
 permissions:
   contents: read
