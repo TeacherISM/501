@@ -1,3 +1,5 @@
+# Código obtenido del repositorio público de imágenes de AWS
+
 FROM public.ecr.aws/lambda/python:3.8
 
 # Install the function's dependencies using file requirements.txt
