@@ -2,7 +2,7 @@ name: CDCI A01029956
 
 on: 
   push:
-    branches: [ A01029956 ] # Should be the main branch
+    branches: [ main ] # Should be the main branch
   pull_request:
     branches: [ main ]
 
@@ -54,8 +54,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      # - name: Install dependencies
-      #   run: pip install -r python3/requirements.txt
       - name: Zip
         run: |
           RUN_ENV=dev
