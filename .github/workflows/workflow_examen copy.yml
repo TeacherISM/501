@@ -1,4 +1,4 @@
-name: Workflow A01352283
+name: Workflow A01352283 latest
 
 on:
   push:
@@ -100,7 +100,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
-          IMAGE_TAG: A01352283
+          IMAGE_TAG: latest
         with:
           context: ./ABC
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
@@ -108,7 +108,7 @@ jobs:
       - name: Save image
         uses: actions/upload-artifact@v3
         env:
-          IMAGE_TAG: A01352283
+          IMAGE_TAG: latest
         with:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp/${{ env.IMAGE_TAG }}.tar
@@ -126,7 +126,7 @@ jobs:
       - name: Read artifact
         uses: actions/download-artifact@v3
         env:
-          IMAGE_TAG: A01352283
+          IMAGE_TAG: latest
         with:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp
@@ -146,7 +146,7 @@ jobs:
         env:
           CR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
-          IMAGE_TAG: A01352283
+          IMAGE_TAG: latest
         run: |
           docker load --input /tmp/${{ env.IMAGE_TAG }}.tar
           docker image ls -a
