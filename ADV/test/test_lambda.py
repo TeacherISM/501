@@ -1,9 +1,10 @@
-from src.app import aws_Lambda as handler
+
 import sys
 import os
 import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.app import aws_Lambda as handler
 
 def test_handler(caplog):
     caplog.set_level(logging.INFO)  # Set the log level to capture INFO and above
