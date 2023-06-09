@@ -1,16 +1,14 @@
-module.exports = {
-    transform: {
-      '^.+\\.m?js$': 'babel-jest'
-    },
-    reporters: [
-        'default',
-        ['jest-html-reporters', {
-          publicPath: './test-report',
-          filename: 'test-report.html',
-          pageTitle: 'Test Report',
-          includeFailureMsg: true,
-          includeConsoleLog: true
-        }]
-      ]
-  };
+export const transform = {
+    '^.+\\.m?js$': 'babel-jest'
+};
+export const reporters = [
+    'default',
+    ['jest-html-reporters', {
+        publicPath: './test-report',
+        filename: 'test-report.html',
+        pageTitle: 'Test Report',
+        includeFailureMsg: true,
+        includeConsoleLog: true
+    }]
+];
   
