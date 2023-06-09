@@ -1,5 +1,6 @@
 def handler(event, context):
+    suma = 1 + 2
     return {
-        "statusCode": 200,
-        "message": 'Hola, Mateo'
+        "suma": suma,
     }
+
