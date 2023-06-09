@@ -113,6 +113,48 @@ jobs:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp/${{ env.IMAGE_TAG }}.tar
 
+  DockerizeLatest:
+    runs-on: ubuntu-latest
+    needs: Package
+    if: github.ref == 'refs/heads/A01352283' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+
+      - name: Build and tag image
+        uses: docker/build-push-action@v4
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: latest
+        with:
+          context: ./ABC
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
+      - name: Save image
+        uses: actions/upload-artifact@v3
+        env:
+          IMAGE_TAG: latest
+        with:
+          name: ${{ env.IMAGE_TAG }}
+          path: /tmp/${{ env.IMAGE_TAG }}.tar
+
   Deploy:
     runs-on: ubuntu-latest
     needs: Dockerize
@@ -147,6 +189,47 @@ jobs:
           CR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: A01352283
+        run: |
+          docker load --input /tmp/${{ env.IMAGE_TAG }}.tar
+          docker image ls -a
+          docker push $CR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    outputs:
+      ecr_registry: ${{ steps.login-ecr.outputs.registry }}
+
+  DeployLatest:
+    runs-on: ubuntu-latest
+    needs: DockerizeLatest
+    if: github.ref == 'refs/heads/A01352283' && github.event_name == 'push'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup the Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Read artifact
+        uses: actions/download-artifact@v3
+        env:
+          IMAGE_TAG: latest
+        with:
+          name: ${{ env.IMAGE_TAG }}
+          path: /tmp
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+      - name: Deploy image
+        env:
+          CR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: latest
         run: |
           docker load --input /tmp/${{ env.IMAGE_TAG }}.tar
           docker image ls -a
