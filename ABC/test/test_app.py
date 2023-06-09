@@ -1,5 +1,5 @@
 import json
-from my_lambda_script import lambda_handler
+from src import lambda_handler
 
 
 def test_lambda_handler():
