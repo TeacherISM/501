@@ -1,4 +1,3 @@
-
 FROM public.ecr.aws/lambda/python:3.8
 WORKDIR /FDSC
 COPY FDSC/ ./
