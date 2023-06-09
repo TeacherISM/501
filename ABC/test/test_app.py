@@ -18,4 +18,3 @@ def test_lambda_handler():
     # Assert the expected values
     assert result['statusCode'] == 200
     assert response_body['sum'] == 8
-    
