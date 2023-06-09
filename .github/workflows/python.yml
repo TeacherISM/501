@@ -74,7 +74,7 @@ jobs:
           if [ -f python3/requirements.txt ]; then pip install -r python3/requirements.txt; fi
 
       #Package files to export them
-      - name: Package files in a zip
+      - name: Build distribution package
         run: |
           RUN_ENV=dev 
-          zip pythonFiles.zip python3/src/app.py
+          python setup.py sdist
