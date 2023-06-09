@@ -12,6 +12,8 @@ def lambda_handler(event, context):
     Code for a lambda aws handler to sum two numbers.
     """
 
+    print(context)
+
     number_one = event['number_one']
     number_two = event['number_two']
 
