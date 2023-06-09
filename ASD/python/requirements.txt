@@ -1,0 +1,6 @@
+flask
+jsonify
+coverage
+pytest
+pytest-cov
+pytest-mock
