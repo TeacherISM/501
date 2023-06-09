@@ -99,9 +99,12 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: latest
+          IMAGE_TAG2: A01352283
         with:
           context: ./ABC
-          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          tags: |
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG2 }}
           outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
       - name: Save image
         uses: actions/upload-artifact@v3
