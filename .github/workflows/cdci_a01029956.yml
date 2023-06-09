@@ -137,5 +137,5 @@ jobs:
           ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: A01029956:latest
         run: |
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:A01029956
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:A01029956
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
