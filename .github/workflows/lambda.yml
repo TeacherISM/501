@@ -69,7 +69,7 @@ jobs:
           
           - name: Revisar si existe el paquete
             run: |
-                unzip funcion_empaquetada.zip
+                unzip -o funcion_empaquetada.zip
 
     compilar_img_docker:
         needs: paquete_compilacion
