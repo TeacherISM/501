@@ -2,12 +2,9 @@ name: Python App
 
 on:
   push:
-    branches:
-      - mainTestGina
+    branches: ["*"]
   pull_request:
-    branches: 
-      - mainTestGina
-
+    branches: ["*"]
 
 jobs: 
   build_lint:
