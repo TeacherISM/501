@@ -9,9 +9,6 @@ class AppTest(TestCase):
         result = lambda_handler(None , None)
         self.assertEqual(result, 4)
 
-
-from src import lambda_handler
-
 def test_sum_numbers():
     event = {'numbers': [1, 2, 3, 4, 5]}
     expected_result = 15
