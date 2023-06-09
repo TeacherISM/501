@@ -1,0 +1,171 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Application workflow
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "*" ]
+    
+permissions:
+  contents: read
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "linting"
+  linting:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Set up python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      
+      # Install dependecies
+      - name: Install dependecies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f MHL/requirements.txt ]; then pip install -r MHL/requirements.txt; fi
+          
+      # flake 8
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      
+
+  unit-test:
+
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Set up pyhton
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      
+      # Install dependecies
+      - name: Install dependecies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f MHL/requirements.txt ]; then pip install -r MHL/requirements.txt; fi
+    
+
+      #Py test
+      - name: Test with pytest
+        run: |
+            RUN_ENV=dev 
+            coverage run -m pytest MHL/test/
+            coverage report
+            coverage html -d cc_report/
+  package:
+    runs-on: ubuntu-latest
+    needs: [linting, unit-test]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Zip source code
+        run: zip -r lambda_package.zip MHL/src
+
+  dockerize:
+    runs-on: ubuntu-latest
+    needs: package
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+      - name: Build and tag image
+        uses: docker/build-push-action@v4
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: A01751912:latest
+        with:
+          context: ./MHL
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
+      - name: Save image
+        uses: actions/upload-artifact@v3
+        env:
+          IMAGE_TAG: A01751912:latest
+        with:
+          name: ${{ env.IMAGE_TAG }}
+          path: /tmp/${{ env.IMAGE_TAG }}.tar
+          
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [dockerize, package]
+    if: github.ref == 'refs/heads/main'
+    # This are the deply steps in the file
+    # 1. Set up Docker Buildx
+    # 2. Read artifact
+    # 3. Configure AWS credentials
+    # 4. Login to Amazon ECR
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Read artifact
+        uses: actions/download-artifact@v3
+        env:
+          IMAGE_TAG: A01751912:latest
+        with:
+          name: ${{ env.IMAGE_TAG }}
+          path: /tmp
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+      - name: Deploy image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: A01751912:latest
+        run: |
+          docker load --input /tmp/$IMAGE_TAG.tar
+          docker image ls -a
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    outputs:
+      ecr_registry: ${{ steps.login-ecr.outputs.registry }}
