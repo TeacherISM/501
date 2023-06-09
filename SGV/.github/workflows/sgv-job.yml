@@ -3,13 +3,11 @@
 name: Sum Lambda Deployment
 
 on:
-    push:
-        branches:
-            - main
-            - A01029746
-    pull_request:
-        branches:
-            - A01029746
+  push:
+    branches: ["main", "A01029746"]
+  pull_request:
+    branches: ["main", "A01029746"]
+    
 
 jobs:
     # This job applies linting to the lambda
