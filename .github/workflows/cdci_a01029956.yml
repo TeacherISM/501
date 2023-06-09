@@ -2,7 +2,7 @@ name: CDCI A01029956
 
 on: 
   push:
-    branches: [ A01029956 ] # Should be the main branch
+    branches: [ main ] # Should be the main branch
   pull_request:
     branches: [ main ]
 
