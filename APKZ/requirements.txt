@@ -1,3 +1,4 @@
 coverage
 pytest
 python3
+pip3
