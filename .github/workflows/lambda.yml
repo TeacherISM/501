@@ -95,60 +95,60 @@ jobs:
             with:
                   registry-type: public
                       
-          - name: Build and tag image (Version 1)
-            uses: docker/build-push-action@v4
-            env:
-                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                  ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
-                  IMAGE_TAG: A01025303-latest-v1
-            with:
-                context: ./APKZ
-                tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-                outputs: type=docker,dest=/tmp/A01025303-latest-v1.tar
-            
-          - name: Build and tag image (Version 2)
-            uses: docker/build-push-action@v4
-            env:
-                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                  ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
-                  IMAGE_TAG: A01025303-latest-v2
-            with:
-                context: ./APKZ
-                tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-                outputs: type=docker,dest=/tmp/A01025303-latest-v2.tar
-
-          - name: Save image (Version 1)
-            uses: actions/upload-artifact@v2
-            with:
-                name: A01025303-latest-v1
-                path: ./APKZ
-
-          - name: Save image (Version 2)
-            uses: actions/upload-artifact@v2
-            with:
-                name: A01025303-latest-v2
-                path: ./APKZ
-        #   - name: Build y tageo de imagen
+        #   - name: Build and tag image (Version 1)
         #     uses: docker/build-push-action@v4
         #     env:
-        #       ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        #       ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
-        #       IMAGE_TAG: A01025303-latest
+        #           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        #           ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+        #           IMAGE_TAG: A01025303-latest-v1
         #     with:
-        #       context: ./APKZ
-        #       tags: |
-        #         ${{ steps.login-ecr.outputs.registry }}/public.ecr.aws/d0z3f1c0/501ecr:A01025303-latest
-        #         ${{ steps.login-ecr.outputs.registry }}/public.ecr.aws/d0z3f1c0/501ecr:A01025303-another-tag
-        #     #   tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-        #       outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
-                     
-        #   - name: Save image
-        #     uses: actions/upload-artifact@v3
+        #         context: ./APKZ
+        #         tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+        #         outputs: type=docker,dest=/tmp/A01025303-latest-v1.tar
+            
+        #   - name: Build and tag image (Version 2)
+        #     uses: docker/build-push-action@v4
         #     env:
-        #       IMAGE_TAG: A01025303-latest
+        #           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        #           ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+        #           IMAGE_TAG: A01025303-latest-v2
         #     with:
-        #       name: ${{ env.IMAGE_TAG }}
-        #       path: /tmp/${{ env.IMAGE_TAG }}.tar
+        #         context: ./APKZ
+        #         tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+        #         outputs: type=docker,dest=/tmp/A01025303-latest-v2.tar
+
+        #   - name: Save image (Version 1)
+        #     uses: actions/upload-artifact@v2
+        #     with:
+        #         name: A01025303-latest-v1
+        #         path: ./APKZ
+
+        #   - name: Save image (Version 2)
+        #     uses: actions/upload-artifact@v2
+        #     with:
+        #         name: A01025303-latest-v2
+        #         path: ./APKZ
+          - name: Build y tageo de imagen
+            uses: docker/build-push-action@v4
+            env:
+              ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+              ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+              IMAGE_TAG: A01025303-latest
+            with:
+              context: ./APKZ
+              tags: |
+                ${{ steps.login-ecr.outputs.registry }}/public.ecr.aws/d0z3f1c0/501ecr:A01025303-latest
+                ${{ steps.login-ecr.outputs.registry }}/public.ecr.aws/d0z3f1c0/501ecr:A01025303-another-tag
+            #   tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+              outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
+                     
+          - name: Save image
+            uses: actions/upload-artifact@v3
+            env:
+              IMAGE_TAG: A01025303-latest
+            with:
+              name: ${{ env.IMAGE_TAG }}
+              path: /tmp/${{ env.IMAGE_TAG }}.tar
 
     insertar_img_ecr:
         runs-on: ubuntu-latest
@@ -157,24 +157,24 @@ jobs:
           - name: Set up Docker Buildx
             uses: docker/setup-buildx-action@v2
 
-          - name: Read artifact (Version 1)
-            uses: actions/download-artifact@v2
-            with:
-                name: A01025303-latest-v1
-                path: /tmp/A01025303-latest-v1
-
-          - name: Read artifact (Version 2)
-            uses: actions/download-artifact@v2
-            with:
-                name: A01025303-latest-v2
-                path: /tmp/A01025303-latest-v2
-        #   - name: Read artifact
-        #     uses: actions/download-artifact@v3
-        #     env:
-        #         IMAGE_TAG: latest-apkz
+        #   - name: Read artifact (Version 1)
+        #     uses: actions/download-artifact@v2
         #     with:
-        #         name: ${{ env.IMAGE_TAG }}
-        #         path: /tmp
+        #         name: A01025303-latest-v1
+        #         path: /tmp/A01025303-latest-v1
+
+        #   - name: Read artifact (Version 2)
+        #     uses: actions/download-artifact@v2
+        #     with:
+        #         name: A01025303-latest-v2
+        #         path: /tmp/A01025303-latest-v2
+          - name: Read artifact
+            uses: actions/download-artifact@v3
+            env:
+                IMAGE_TAG: A01025303-latest
+            with:
+                name: ${{ env.IMAGE_TAG }}
+                path: /tmp
 
           - name: Configure AWS credentials
             uses: aws-actions/configure-aws-credentials@v1
@@ -188,31 +188,31 @@ jobs:
             uses: aws-actions/amazon-ecr-login@v1
             with:
               registry-type: public
-          - name: Deploy image (Version 1)
-            env:
-                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
-                IMAGE_TAG: A01025303-latest-v1
-            run: |
-                docker load --input /tmp/A01025303-latest-v1.tar
-                docker image ls -a
-                docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        
-          - name: Deploy image (Version 2)
-            env:
-                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
-                IMAGE_TAG: A01025303-latest-v2
-            run: |
-                docker load --input /tmp/A01025303-latest-v2.tar
-                docker image ls -a
-                docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        #   - name: Deploy image
+        #   - name: Deploy image (Version 1)
         #     env:
-        #       ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        #       ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
-        #       IMAGE_TAG: latest-apkz
+        #         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        #         ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+        #         IMAGE_TAG: A01025303-latest-v1
         #     run: |
-        #       docker load --input /tmp/$IMAGE_TAG.tar
-        #       docker image ls -a
-        #       docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        #         docker load --input /tmp/${{IMAGE_TAG}}.tar
+        #         docker image ls -a
+        #         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        
+        #   - name: Deploy image (Version 2)
+        #     env:
+        #         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        #         ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+        #         IMAGE_TAG: A01025303-latest-v2
+        #     run: |
+        #         docker load --input /tmp/A01025303-latest-v2.tar
+        #         docker image ls -a
+        #         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          - name: Deploy image
+            env:
+              ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+              ECR_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
+              IMAGE_TAG: A01025303-latest
+            run: |
+              docker load --input /tmp/$IMAGE_TAG.tar
+              docker image ls -a
+              docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
