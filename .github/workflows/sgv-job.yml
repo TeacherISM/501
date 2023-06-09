@@ -5,10 +5,10 @@ name: Sum Lambda Deployment
 on:
   push:
     branches:
-      - main
+      - mainTest
   pull_request:
     branches:
-      [main, A01029746]
+      [mainTest, A01029746]
     
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
     package:
         runs-on: ubuntu-latest
 
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/mainTest'
 
         needs: [build, test]
         steps:
@@ -62,7 +62,7 @@ jobs:
     dockerize:
         runs-on: ubuntu-latest
 
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/mainTest'
 
         needs: package
         steps:
@@ -103,7 +103,7 @@ jobs:
     dockerize-latest:
         runs-on: ubuntu-latest
 
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/mainTest'
 
         needs: package
         steps:
@@ -144,7 +144,7 @@ jobs:
     deploy:
       runs-on: ubuntu-latest
 
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/mainTest'
 
       needs: [dockerize, package]
       steps:
@@ -184,7 +184,7 @@ jobs:
     deploy-latest:
       runs-on: ubuntu-latest
 
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/mainTest'
 
       needs: [dockerize-latest, package]
       steps:
