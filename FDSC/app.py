@@ -17,5 +17,4 @@ def lambda_handler(event, context):
 
     if isinstance(number_one, int) and isinstance(number_two, int):
         return number_one + number_two
-    else:
-        return None
+    return None
