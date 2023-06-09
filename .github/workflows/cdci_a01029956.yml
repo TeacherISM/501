@@ -139,4 +139,4 @@ jobs:
         run: |
           docker load -i /tmp/A01029956.tar
           docker image ls -a
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:'$IMAGE_TAG'
