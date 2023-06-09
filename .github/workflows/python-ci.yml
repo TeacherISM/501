@@ -81,7 +81,7 @@ jobs:
           context: .
           push: false
           tags: ${{ env.ECR_URL }}/python-lambda:A01633010,${{ env.ECR_URL }}/python-lambda:latest
-          outputs: type=docker,dest=/tmp/${{ env.IMGNAME }}.tar
+          outputs: type=docker,dest=/tmp/python-lambda.tar
 
       - name: Save to artifact
         uses: actions/upload-artifact@v3
