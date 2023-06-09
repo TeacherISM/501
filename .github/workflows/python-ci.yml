@@ -119,10 +119,5 @@ jobs:
       - name: ECR Log In
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Docker Tagging
-        run: |
-          docker tag python-lambda:latest ${{ env.ECR_URL }}/python-lambda:A01633010
-          docker tag python-lambda:latest ${{ env.ECR_URL }}/python-lambda:latest
-
       - name: Push Image
         run: docker push ${{ env.ECR_URL }}/python-lambda:latest
