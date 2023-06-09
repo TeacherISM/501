@@ -6,6 +6,7 @@ on:
     push:
         branches:
             - main
+            - A01029746
     pull_request:
         branches:
             - A01029746
