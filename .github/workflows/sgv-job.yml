@@ -20,7 +20,7 @@ jobs:
               with:
                   node-version: '18.x'
             - name: Install dependencies
-              working-directory: ./lambda
+              working-directory: /lambda
               run: |
                     npm install
                     npm run lint
@@ -35,7 +35,7 @@ jobs:
               with:
                   node-version: '18.x'
             - name: Test Code
-              working-directory: ./lambda
+              working-directory: /lambda
               run: |
                      npm install
                      npm run test
@@ -50,12 +50,12 @@ jobs:
               with:
                   node-version: '18.x'
             - name: Install dependencies before package
-              working-directory: ./lambda
+              working-directory: /lambda
               run: |
                     mkdir -p package
                     npm install
             - name: Package Lambda
-              working-directory: ./lambda
+              working-directory: /lambda
               run: |
                     cd package
                     zip -r lambda.zip lambda
