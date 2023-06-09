@@ -1,8 +1,7 @@
-import pytest
+import app
 from unittest import TestCase
 import sys
 sys.path.append('../src')
-from src import app
 
 class test(TestCase):
     def test_app(self):
