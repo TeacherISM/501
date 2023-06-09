@@ -1,4 +1,5 @@
-from src import app
+#from src import app
+from app import lambda_handler
 from unittest import TestCase
 import sys
 sys.path.append('../src')
@@ -9,7 +10,7 @@ class AppTest(TestCase):
         event = {'numbers': [1, 2, 3, 4, 5]}
         expected_result = 15
 
-        response = app.lambda_handler(event, None)
+        response = lambda_handler(event, None)
 
         self.assertEqual(response['statusCode'], 200)
         self.assertEqual(response['body'], expected_result)
