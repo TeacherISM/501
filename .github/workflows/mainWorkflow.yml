@@ -1,6 +1,6 @@
 # Worklow for Build, Test, Package, Dockerize, Deploy
 
-name: Worflow GGP A01029422
+name: Worflow ggp A01029422
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
               run: |
                 python -m pip install --upgrade pip
                 pip install flake8 pytest
-                if [ -f GGP/requirements.txt ]; then pip install -r GGP/requirements.txt; fi
+                if [ -f ggp/requirements.txt ]; then pip install -r ggp/requirements.txt; fi
             - name: Lint with flake8
               run: |
                 # stop the build if there are Python syntax errors or undefined names
@@ -46,11 +46,11 @@ jobs:
               run: |
                 python -m pip install --upgrade pip
                 pip install flake8 pytest
-                if [ -f GGP/requirements.txt ]; then pip install -r GGP/requirements.txt; fi
+                if [ -f ggp/requirements.txt ]; then pip install -r ggp/requirements.txt; fi
             - name: Test with pytest
               run: |
                 RUN_ENV=dev
-                coverage run -m coverage GGP/test
+                coverage run -m pytest ggp/test
                 coverage report
                 coverage html -d cc_report/
 
@@ -68,9 +68,9 @@ jobs:
               run: |
                 python -m pip install --upgrade pip
                 pip install flake8 pytest
-                if [ -f GGP/requirements.txt ]; then pip install -r GGP/requirements.txt; fi
+                if [ -f ggp/requirements.txt ]; then pip install -r ggp/requirements.txt; fi
             - name: Package
-              run: zip -r lambdaF.zip GGP/python -x '*.git*'
+              run: zip -r lambdaF.zip ggp/python -x '*.git*'
             
     dockerize:
         needs: package
