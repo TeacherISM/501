@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - A01028653
   pull_request:
     types: [opened]
 
