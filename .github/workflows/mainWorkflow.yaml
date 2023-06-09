@@ -95,6 +95,8 @@ jobs:
             - name: Remove .dockerignore
               run: |
                 rm -f ./ggp/.dockerignore
+            - name: Verify Dockerfile presence
+              run: ls -R ./ggp
             - name: Build, and tag image
               uses: docker/build-push-action@v2
               env:
