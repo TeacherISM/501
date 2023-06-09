@@ -2,7 +2,7 @@ name: Application workflow
 
 on:
   push:
-    branches: [ "fake-main" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "*" ]
     
@@ -60,7 +60,7 @@ jobs:
   package:
     runs-on: ubuntu-latest
     needs: [linting, unit-test]
-    if: github.ref == 'refs/heads/fake-main'
+    if: github.ref == 'refs/heads/main'
     
     steps:
       - name: Checkout code
@@ -72,7 +72,7 @@ jobs:
   dockerize:
     runs-on: ubuntu-latest
     needs: package
-    if: github.ref == 'refs/heads/fake-main'
+    if: github.ref == 'refs/heads/main'
     
     steps:
       - name: Checkout
@@ -112,7 +112,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [dockerize, package]
-    if: github.ref == 'refs/heads/fake-main'
+    if: github.ref == 'refs/heads/main'
     
     steps:
       - name: Set up Docker Buildx
