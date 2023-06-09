@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     if: ${{ github.event_name == 'pull_request' }}
-    
+
     needs: build_lint
     
     steps:
@@ -61,6 +61,9 @@ jobs:
 
   package:
     runs-on: ubuntu-latest
+
+    if: ${{ github.event_name == 'push' }}
+
     needs: test
     
     steps:
@@ -86,6 +89,9 @@ jobs:
           
   dockerize:
     runs-on: ubuntu-latest
+
+    if: ${{ github.event_name == 'push' }}
+
     needs: package
     steps:
       - name: Checkout
@@ -143,6 +149,9 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+
+    if: ${{ github.event_name == 'push' }}
+    
     needs: dockerize
     steps:
       - name: Set up Docker Buildx
