@@ -1,0 +1,136 @@
+name: CDCI A01029956
+
+on: 
+  push:
+    branches: [ main ] # Should be the main branch
+  pull_request:
+    branches: [ main ]
+
+jobs:
+# 1 OK
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # pip install flake8 pytest
+          if [ -f SFMB/requirements.txt ]; then pip install -r SFMB/requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          # Stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+# 2 OK
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install -r SFMB/requirements.txt
+      - name: Test with pytest
+        run: |
+          RUN_ENV=dev
+          coverage run -m pytest SFMB/tests/
+          coverage report
+          coverage html -d coverage_html/
+# 3
+  compiling_package:
+    runs-on: ubuntu-latest
+    needs: [linting, unit_tests]
+    if: github.event_name != 'pull_request' # Only run on push
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Zip
+        run: |
+          RUN_ENV=dev
+          zip app.zip SFMB/src/app.py
+# 4
+  image_compiling:
+    runs-on: ubuntu-latest
+    needs: compiling_package
+    if: github.event_name != 'pull_request' # Only run on push
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+      - name: Build and tag image
+        uses: docker/build-push-action@v4
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: A01029956_latest
+        with:
+          context: ./SFMB
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          outputs: type=docker, dest=/tmp/${{ env.IMAGE_TAG }}.tar
+      - name: Save image
+        uses: actions/upload-artifact@v3
+        env: 
+          IMAGE_TAG: A01029956_latest
+        with:
+          name: ${{ env.IMAGE_TAG }}
+          path: /tmp/${{ env.IMAGE_TAG }}.tar
+# 5
+  image_insertion:
+    runs-on: ubuntu-latest
+    needs: [image_compiling, compiling_package]
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Read image
+        uses: actions/download-artifact@v3
+        env: 
+          IMAGE_TAG: A01029956_latest
+        with:
+          name: ${{ env.IMAGE_TAG }}
+          path: /tmp
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+      - name: Deploy image with tag A01029956
+        env: 
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: A01029956
+          IMAGE_TAG2: A01029956_latest
+        run: |
+          docker load --input /tmp/${IMAGE_TAG}.tar
+          docker image ls -a
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2

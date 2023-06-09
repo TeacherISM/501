@@ -1,0 +1,12 @@
+# AWS
+FROM public.ecr.aws/lambda/python:3.8
+
+# Install dependencies in the requirements file into current dir
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+
+# Copy the lambda function code into the container
+COPY src/app.py .
+
+# Set CMD to handler fx
+CMD ["app.handler"]
