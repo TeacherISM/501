@@ -1,0 +1,7 @@
+/RRS/my_env/
+/RRS/.pytest_cache/
+/RRS/.coverage
+/RRS/cc_report/
+/terraform/.terraform/
+/terraform/.terraform.lock*
+/terraform/terraform.tfstate*
