@@ -8,3 +8,7 @@
 env/
 venv/
 ENV/
+pyvenv.cfg
+lib/
+/include
+/bin
