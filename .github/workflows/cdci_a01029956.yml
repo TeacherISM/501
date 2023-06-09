@@ -88,7 +88,7 @@ jobs:
           ECR_REPOSITORY: d0z3f1c0/cdci # My AWS alias
           IMAGE_TAG: A01029956
         with:
-          context: ./python3
+          context: ./SFMB
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           outputs: type=docker, dest=/tmp/${{ env.IMAGE_TAG }}.tar
       - name: Save image
