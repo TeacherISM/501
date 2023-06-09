@@ -170,10 +170,10 @@ jobs:
              A01025076 V1
              A01025076 latest
         run: |
-          docker load --input /tmp/$IMAGE_TAG.tar
           docker image ls -a
           for tag in "${IMAGE_TAG[@]}"; do
             docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$tag
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$tag
           done
+      
           
