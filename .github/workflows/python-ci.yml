@@ -61,5 +61,4 @@ jobs:
           if [ -f FDSC/requirements.txt ]; then pip install -f FDSC/requirements.txt; fi
 
       - name: Build distribution wheel
-        run: python3 -m build --wheel FDSC/test.py
-
+        run: python3 -m build --wheel
