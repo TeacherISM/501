@@ -44,6 +44,8 @@ jobs:
         pip install pytest
         if [-f TRH/requirements.txt]; then pip install -r TRH/requirements.txt; fi
     - name: Ejecutar pruebas unitarias
+      env:
+        AWS_REGION: us-east-1
       run: |
         RUN_ENV=dev
         coverage run -m pytest TRH/test/
