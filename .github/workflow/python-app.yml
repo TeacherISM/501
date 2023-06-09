@@ -3,12 +3,12 @@ name: AWS Lamba Pipeline
 on:
   push:
     branches: 
-      - A01658259
-      - main
+      - "A01658259"
+      - "main"
   pull_request:
     branches:
-      - A01658259
-      - main
+      - "A01658259"
+      - "main"
 
 permissions:
   contents: read
