@@ -69,6 +69,10 @@ jobs:
         id: unzip-files
         run: |
           unzip ${{ github.sha }}.zip
+      - name: List
+        id: ls
+        run: |
+          ls
       - name: Change directories
         run: cd A01028653
       - name: List
@@ -94,7 +98,7 @@ jobs:
           ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: a01028653
         with:
-          context: ./A01028653
+          context: .
           push: false
           outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
