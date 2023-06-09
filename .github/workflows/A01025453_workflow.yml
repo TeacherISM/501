@@ -1,0 +1,194 @@
+name: A01025453
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+            python-version: "3.10"
+  
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r A01025453/requirements.txt
+  
+      - name: Linting
+        run: |
+            flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r A01025453/requirements.txt
+
+      - name: Run unit tests with coverage
+        run: coverage run --source=func -m pytest A01025453/tests/test.py
+
+  build_package:  
+    if: ${{ github.event_name != 'pull_request' }}      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r A01025453/requirements.txt
+
+      - name: Create ZIP
+        run: |
+          RUN_ENV=dev 
+          zip my-app.zip A01025453/func/app.py A01025453/requirements.txt
+
+  build_docker_image:
+    if: ${{ github.event_name != 'pull_request' }}      
+    needs: 
+        - build_package
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+
+      - name: Build and tag latest image
+        uses: docker/build-push-action@v4
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          LATEST_TAG: latest
+          SELF_TAG: A01025453
+        with:
+          context: ./A01025453
+          tags: 
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.LATEST_TAG }}
+          outputs: type=docker,dest=/tmp/${{ env.LATEST_TAG }}.tar
+
+      - name: Save latest image
+        uses: actions/upload-artifact@v3
+        env:
+          LATEST_TAG: latest
+        with:
+          name: ${{ env.LATEST_TAG }}
+          path: /tmp/${{ env.LATEST_TAG }}.tar
+
+      - name: Build and tag copy image
+        uses: docker/build-push-action@v4
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          SELF_TAG: A01025453
+        with:
+          context: ./A01025453
+          tags: 
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.SELF_TAG }}
+          outputs: type=docker,dest=/tmp/${{ env.SELF_TAG }}.tar
+
+      - name: Save copy image
+        uses: actions/upload-artifact@v3
+        env:
+            SELF_TAG: A01025453
+        with:
+          name: ${{ env.SELF_TAG }}
+          path: /tmp/${{ env.SELF_TAG }}.tar
+
+  push_to_ecr:
+    if: ${{ github.event_name != 'pull_request' }}      
+    needs: 
+        - build_docker_image
+        - build_package
+        
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Read latest artifact
+        uses: actions/download-artifact@v3
+        env:
+          LATEST_TAG: latest
+        with:
+          name: ${{ env.LATEST_TAG }}
+          path: /tmp
+
+      - name: Read copy artifact
+        uses: actions/download-artifact@v3
+        env:
+            SELF_TAG: A01025453
+        with:
+          name: ${{ env.SELF_TAG }}
+          path: /tmp
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+
+      - name: Deploy images
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          LATEST_TAG: latest
+          SELF_TAG: A01025453
+        run: |
+          docker load --input /tmp/$LATEST_TAG.tar
+          docker image ls -a
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$LATEST_TAG
+          docker load --input /tmp/$SELF_TAG.tar
+          docker image ls -a
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$SELF_TAG
+
