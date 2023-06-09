@@ -138,5 +138,7 @@ jobs:
           IMAGE_TAG: A01029956
           IMAGE_TAG_LATEST: A01029956_latest
         run: |
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG_LATEST
+          # Build the final image stage
+          docker build --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG_LATEST --file Dockerfile .
+          # Push the final image stage
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG_LATEST
