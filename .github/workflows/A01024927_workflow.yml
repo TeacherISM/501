@@ -174,7 +174,7 @@ jobs:
               run: |
                 docker load --input /tmp/$IMAGE_TAG.tar
                 docker image ls -a
-                docker push $ECR_REGISTRY/$FINAL_IMG_TAG
+                docker push $ECR_REGISTRY/$URI_REPOSITORY:$IMAGE_TAG
                 
                 
             - name: Deploy image 2
@@ -187,6 +187,6 @@ jobs:
               run: |
                 docker load --input /tmp/$IMAGE_TAG.tar
                 docker image ls -a
-                docker push $ECR_REGISTRY/$FINAL_IMG_TAG
+                docker push $ECR_REGISTRY/$URI_REPOSITORY:$IMAGE_TAG
                 
      
