@@ -60,18 +60,16 @@ jobs:
                 ECR_REPOSITORY: d0z3f1c0/501ecr
                 IMAGE_TAG: latest
            with:
-                context: ./ASD/python3
+                context:
                 tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
                 outputs: type=docker, dest=/tmp/${{ env.IMAGE_TAG }}.tar
          - name: Save image
            uses: actions/upload-artifact@v3
            env:
-            images:
-              a01028728
-              latest
+                IMAGE_TAG: latest
            with:
-                name: ${{ env.images}}
-                path: /tmp/${{ env.images }}.tar
+                name: ${{ env.IMAGE_TAG}}
+                path: /tmp/${{ env.IMAGE_TAG }}.tar
     deploy:
         runs-on: ubuntu-latest
         needs: dockerize
@@ -81,11 +79,9 @@ jobs:
           - name: read artifact
             uses: actions/download-artifact@v3
             env:
-              images:
-                a01028728
-                latest
+                IMAGE_TAG: latest
             with:
-                name: ${{ env.images }}
+                name: ${{ env.IMAGE_TAG }}
                 path: /tmp
           - name: configure aws credentials
             uses: aws-actions/configure-aws-credentials@v1
