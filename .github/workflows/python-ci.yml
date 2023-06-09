@@ -76,4 +76,4 @@ jobs:
 
 
       - name: Build Docker image
-        run: docker build -t myimage FDSC
+        run: docker build -t myimage
