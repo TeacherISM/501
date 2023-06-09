@@ -45,10 +45,15 @@ jobs:
           coverage run -m pytest KVMR
           coverage report
           coverage html -d cc_report/
+          response=$(python -c "import app; event={}; context={}; response = app.handler(event, context); print(response['statusCode'], response['body'])")
+          status_code=$(echo "$response" | awk '{print $1}')
+          body=$(echo "$response" | awk '{print $2}')
+          echo "::set-output name=status_code::$status_code"
+          echo "::set-output name=body::$body"
       - name: Print test results
         run: |
-          echo "Status Code: ${{ steps.<step_id>.outputs.status_code }}"
-          echo "Body: ${{ steps.<step_id>.outputs.body }}"
+          echo "Status Code: ${{ steps.test.outputs.status_code }}"
+          echo "Body: ${{ steps.test.outputs.body }}"
 
   package:
     runs-on: ubuntu-latest
