@@ -7,4 +7,4 @@ sys.path.append('../src')
 class AppTest(TestCase):
     def test_app(self):
         result = app.lambda_handler()
-        self.assertEqual(result, suma)
+        self.assertEqual(result, 79)
