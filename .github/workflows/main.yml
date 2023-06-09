@@ -86,14 +86,12 @@ jobs:
         with:
           name: package
           path: ADV/app.zip
-
-  
   dockerize:
     if: github.event_name == 'push'
     name: Compilacion de la imagen de docker
     runs-on: ubuntu-latest
     needs: package
-    
+  
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -114,7 +112,24 @@ jobs:
         with:
           registry-type: public
   
-      - name: Build and tag image
+      - name: Build and tag image A01025076
+        uses: docker/build-push-action@v4
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: A01025076
+        with:
+          context: ./ADV
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          outputs: type=docker,dest=/tmp/A01025076.tar
+  
+      - name: Save image A01025076
+        uses: actions/upload-artifact@v3
+        with:
+          name: A01025076
+          path: /tmp/A01025076.tar
+  
+      - name: Build and tag image A01025076_latest
         uses: docker/build-push-action@v4
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -123,15 +138,14 @@ jobs:
         with:
           context: ./ADV
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-          outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
+          outputs: type=docker,dest=/tmp/A01025076_latest.tar
   
-      - name: Save image
+      - name: Save image A01025076_latest
         uses: actions/upload-artifact@v3
-        env:
-          IMAGE_TAG: A01025076_latest
         with:
-          name: ${{ env.IMAGE_TAG }}
-          path: /tmp/${{ env.IMAGE_TAG }}.tar
+          name: A01025076_latest
+          path: /tmp/A01025076_latest.tar
+  
   deploy:
     if: github.event_name == 'push'
     name: Insercion de la imagen de Docker en ECR
