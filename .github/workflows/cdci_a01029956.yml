@@ -68,6 +68,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
 # 5
   image_insersion:
     runs-on: ubuntu-latest
@@ -76,3 +78,30 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Read image
+        uses: actions/download-artifact@v3
+        env: 
+          IMAGE_TAG: A01029956
+        with:
+          name: ${{ env.IMAGE_TAG }}
+          path: /tmp
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+      - name: Deploy image
+        env: 
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: d0z3f1c0/501ecr
+          IMAGE_TAG: A01029956
+        run: |
+          docker load -i /tmp/${{ env.IMAGE_TAG }}.tar
+          docker image ls -a
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
