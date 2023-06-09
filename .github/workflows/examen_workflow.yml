@@ -2,17 +2,16 @@ name: Workflow A01352283
 
 on:
   push:
-    branches: [ A01352283 ]
+    branches: [" A01352283 "]
   pull_request:
-    branches: [ main ]
+    branches: [" main "]
 
 permissions:
   contents: read
 
 jobs:
-  Lint:
+  Build:
     runs-on: ubuntu-latest
-    #if: ${{ github.event.pull_request.base.ref == 'main' }}
 
     steps:
       - uses: actions/checkout@v3
@@ -34,9 +33,10 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
   Test:
     runs-on: ubuntu-latest
-    #if: ${{ github.event.pull_request.base.ref == 'main' }}
+    needs: Build
 
     steps:
       - name: Checkout
