@@ -58,7 +58,7 @@ jobs:
            env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: d0z3f1c0/501ecr
-                IMAGE_TAG: A01028728:latest
+                IMAGE_TAG: <A01028728>:latest
            with:
                 context: ./python3
                 tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
@@ -66,7 +66,7 @@ jobs:
          - name: Save image
            uses: actions/upload-artifact@v3
            env:
-                IMAGE_TAG: A01028728:latest
+                IMAGE_TAG: <A01028728>:latest
            with:
                 name: ${{ env.IMAGE_TAG}}
                 path: /tmp/${{ env.IMAGE_TAG }}.tar
@@ -79,7 +79,7 @@ jobs:
           - name: read artifact
             uses: actions/download-artifact@v3
             env:
-                IMAGE_TAG: A01028728:latest
+                IMAGE_TAG: <A01028728>:latest
             with:
                 name: ${{ env.IMAGE_TAG }}
                 path: /tmp
@@ -98,7 +98,7 @@ jobs:
             env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: d0z3f1c0/501ecr
-                IMAGE_TAG: A01028728:latest
+                IMAGE_TAG: <A01028728>:latest
             run: |
               docker load --input /tmp/$IMAGE_TAG.tar
               docker image ls -a
