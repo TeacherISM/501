@@ -94,7 +94,7 @@ jobs:
                 registry-type: public
             - name: Build, and tag image
               uses: docker/build-push-action@v2
-              env: 
+              env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: d0z3f1c0/501ecr
                 IMAGE_TAG: A01029422-latest
