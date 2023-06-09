@@ -172,4 +172,4 @@ jobs:
         run: |
           docker load --input /tmp/${{env.IMAGE_TAG1}}_${{env.IMAGE_TAG2}}.tar
           docker image ls -a
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1:$IMAGE_TAG2
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1
