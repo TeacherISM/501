@@ -78,7 +78,7 @@ jobs:
               uses: docker/build-push-action@v4
               env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                ECR_REPOSITORY: d0z3f1c0/501ec
+                ECR_REPOSITORY: d0z3f1c0/501ecr
                 IMAGE_TAG: A01029746
               with:
                 context: ./SGV/lambda
@@ -119,7 +119,7 @@ jobs:
             - name: Deploy image
               env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                ECR_REPOSITORY: d0z3f1c0/501ec
+                ECR_REPOSITORY: d0z3f1c0/501ecr
                 IMAGE_TAG: A01029746
               run: |
                 docker load --input /tmp/$IMAGE_TAG.tar
