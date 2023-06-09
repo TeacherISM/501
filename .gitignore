@@ -10,5 +10,5 @@ venv/
 ENV/
 pyvenv.cfg
 lib/
-/include
-/bin
+include/
+bin/
