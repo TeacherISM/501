@@ -127,15 +127,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: A01029956
+          IMAGE_TAG2: A01029956_latest
         run: |
           docker load -i /tmp/${{ env.IMAGE_TAG }}.tar
           docker image ls -a
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      - name: Deploy image with latest
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: d0z3f1c0/501ecr
-          IMAGE_TAG: A01029956:latest
-        run: |
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG2
