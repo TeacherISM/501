@@ -98,7 +98,6 @@ jobs:
       - name: ZIP
         run: |
           RUN_ENV=dev
-          cd python/src/
           zip package.zip python/src/app.py
 
 
