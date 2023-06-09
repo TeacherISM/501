@@ -1,0 +1,148 @@
+# Worklow for Build, Test, Package, Dockerize, Deploy
+
+name: Worflow ggp A01029422
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: [" *"]
+
+permissions:
+  contents: read
+#   packages: write
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up Python 3.10
+              uses: actions/setup-python@v3
+              with:
+                python-version: "3.10"
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install flake8 pytest
+                if [ -f ggp/requirements.txt ]; then pip install -r ggp/requirements.txt; fi
+            - name: Lint with flake8
+              run: |
+                # stop the build if there are Python syntax errors or undefined names
+                flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+                # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+                flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    test:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up Python 3.10
+              uses: actions/setup-python@v3
+              with:
+                python-version: "3.10"
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install flake8 pytest
+                pip install coverage
+                if [ -f ggp/requirements.txt ]; then pip install -r ggp/requirements.txt; fi
+            - name: Test with pytest
+              run: |
+                RUN_ENV=dev
+                coverage run -m pytest ggp/python3/test
+                coverage report
+                coverage html -d cc_report/
+
+    package:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Set up Python 3.10
+              uses: actions/setup-python@v3
+              with:
+                python-version: "3.10"
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install flake8 pytest
+                if [ -f ggp/requirements.txt ]; then pip install -r ggp/requirements.txt; fi
+            - name: Package
+              run: zip -r lambdaF.zip ggp/python3/lambda_func.py
+            
+    dockerize:
+        needs: package
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: us-east-1
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+              with: 
+                registry-type: public
+            - name: Verify Dockerfile presence
+              run: ls -R ./ggp
+            - name: Build, and tag image
+              uses: docker/build-push-action@v2
+              env:
+                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                ECR_REPOSITORY: d0z3f1c0/501ecr
+                IMAGE_TAG: a01029422
+              with:
+                context: ./ggp
+                file: ./ggp/dockerfile
+                tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+                outputs: type=docker,dest=/tmp/${{ env.IMAGE_TAG }}.tar
+            - name: Save image
+              uses: actions/upload-artifact@v3
+              env:
+                IMAGE_TAG: a01029422
+              with:
+                name: ${{ env.IMAGE_TAG }}
+                path: /tmp/${{ env.IMAGE_TAG }}.tar
+
+    deploy:
+        needs: dockerize
+        runs-on: ubuntu-latest
+        steps:
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+            - name: Read artifact
+              uses: actions/download-artifact@v3
+              env:
+                IMAGE_TAG: a01029422
+              with:
+                name: ${{env.IMAGE_TAG}}
+                path: /tmp
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: us-east-1
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+              with: 
+                registry-type: public
+            - name: Deploy image
+              env:
+                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                ECR_REPOSITORY: d0z3f1c0/501ecr
+                IMAGE_TAG: a01029422
+              run: |
+                docker load --input /tmp/${{ env.IMAGE_TAG }}.tar
+                docker image ls -a
+                docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
