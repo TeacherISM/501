@@ -114,7 +114,7 @@ jobs:
           LATEST_TAG: latest
           SELF_TAG: A01025453
         with:
-          context: ./python
+          context: ./A01025453
           tags: 
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.LATEST_TAG }}
           outputs: type=docker,dest=/tmp/${{ env.LATEST_TAG }}.tar
@@ -134,7 +134,7 @@ jobs:
           ECR_REPOSITORY: d0z3f1c0/501ecr
           SELF_TAG: A01025453
         with:
-          context: ./python
+          context: ./A01025453
           tags: 
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.SELF_TAG }}
           outputs: type=docker,dest=/tmp/${{ env.SELF_TAG }}.tar
