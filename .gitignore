@@ -1,0 +1,14 @@
+/python3/my_env
+/python3/.pytest_cache/
+/python3/.coverage
+/python3/cc_report/
+.my_env
+.env
+.venv
+env/
+venv/
+ENV/
+pyvenv.cfg
+lib/
+include/
+bin/
