@@ -92,6 +92,9 @@ jobs:
               uses: aws-actions/amazon-ecr-login@v1
               with: 
                 registry-type: public
+            - name: Remove .dockerignore
+              run: |
+                rm -f ./ggp/.dockerignore
             - name: Build, and tag image
               uses: docker/build-push-action@v2
               env:
