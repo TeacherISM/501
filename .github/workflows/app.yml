@@ -95,9 +95,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r python/requirements.txt
 
-      - name: ZIP IT
+      - name: ZIP
         run: |
           RUN_ENV=dev
+          cd python/src/
           zip package.zip python/src/app.py
 
 
@@ -129,7 +130,7 @@ jobs:
         env: 
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
-          IMAGE_TAG: A01751941
+          IMAGE_TAG: A01751941,latest
         with:
           context: ./python
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
@@ -138,7 +139,7 @@ jobs:
       - name: Save the image
         uses: actions/upload-artifact@v3
         env:
-          IMAGE_TAG: A01751941
+          IMAGE_TAG: A01751941,latest
         with:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp/${{ env.IMAGE_TAG }}.tar
@@ -156,7 +157,8 @@ jobs:
       - name: Read artifact
         uses: actions/download-artifact@v3
         env:
-          IMAGE_TAG: A01751941
+          IMAGE_TAG: A01751941,latest
+
         with:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp
@@ -170,7 +172,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v1 
         with:
           registry-type: public
 
@@ -178,7 +180,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
-          IMAGE_TAG: A01751941
+          IMAGE_TAG: A01751941,latest
         run: |
           docker load --input /tmp/${{ env.IMAGE_TAG }}.tar
           docker image ls -a
