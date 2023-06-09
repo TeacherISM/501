@@ -7,12 +7,20 @@ Author: Francisco D. Salcedo
 """
 
 
-def number_sum(number_one, number_two):
+def lambda_handler(event, context):
     """
-
-    Function that sums two numbers if they are integers.
-
+    Code for a lambda aws handler to sum two numbers.
     """
+    
+    number_one = event['number_one']
+    number_two = event['number_two']
+
     if isinstance(number_one, int) and isinstance(number_two, int):
-        return number_one + number_two
-    return None
+        return {
+            'sum': number_one + number_two
+        }
+    else:
+        return {
+            'error': 'Invalid input'
+        }
+
