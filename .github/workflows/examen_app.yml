@@ -3,8 +3,6 @@ name: Examen
 on: 
   push:
     branches: [ "A01025459" ]
-  pull_request:
-    branches: [ "main" ]
   
 permissions:
   contents: read
