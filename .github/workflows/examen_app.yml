@@ -23,7 +23,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8
-        if [-f TRH/requirements.txt]; then pip install -r TRH/requirements.txt; fi
+        if [ -f TRH/requirements.txt ]; then pip install -r TRH/requirements.txt; fi
     - name: Linting
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -42,7 +42,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pytest
-        if [-f TRH/requirements.txt]; then pip install -r TRH/requirements.txt; fi
+        if [ -f TRH/requirements.txt ]; then pip install -r TRH/requirements.txt; fi
     - name: Ejecutar pruebas unitarias
       env:
         AWS_REGION: us-east-1
