@@ -94,7 +94,7 @@ jobs:
         uses: docker/build-push-action@v4
         env:
           URI_REPOSITORY: public.ecr.aws/d0z3f1c0/501ecr
-          IMAGE_TAG: A01024927
+          IMAGE_TAG: a01024927
         with:
             context: ./AISR
             tags: ${{ env.URI_REPOSITORY }}_${{ env.IMAGE_TAG }}
