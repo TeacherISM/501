@@ -58,6 +58,8 @@ jobs:
     needs: [package]
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Read artifact
         uses: actions/download-artifact@v3
         with:
