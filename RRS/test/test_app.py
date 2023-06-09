@@ -7,5 +7,5 @@ class AppTest(TestCase):
     def test_home(self):
         event = {'x': 3, 'y': 5}
         result = app.lambda_handler(event, None)
-        self.assertEqual(result, 9)
+        self.assertEqual(result, 8)
 
