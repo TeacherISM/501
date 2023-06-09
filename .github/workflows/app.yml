@@ -108,7 +108,7 @@ jobs:
         uses: docker/build-push-action@v2
         env: 
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: z0u5p2f3/exam-test
+          ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: A01751941
         with:
           context: ./python
@@ -157,7 +157,7 @@ jobs:
       - name: Finally deploy image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: z0u5p2f3/exam-test
+          ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: A01751941
         run: |
           docker load --input /tmp/${{ env.IMAGE_TAG }}.tar
