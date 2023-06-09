@@ -2,7 +2,7 @@ name: AWS Lamba Pipeline A01658259
 
 on:
   push:
-    branches: [ "A01025459" ]
+    branches: [ "A01658259" ]
   pull_request:
     branches: ["main"]
 
