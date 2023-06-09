@@ -72,7 +72,7 @@ jobs:
                 unzip -o funcion_empaquetada.zip
 
     compilar_img_docker:
-        needs: paquete_compilacion
+        # needs: paquete_compilacion
         runs-on: ubuntu-latest
 
         steps:
