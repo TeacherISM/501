@@ -81,7 +81,7 @@ jobs:
       - name: Save to artifact
         uses: actions/upload-artifact@v3
         env:
-          IMGNAME: latest-img
+          IMGNAME: python-lambda
         with:
           name: ${{ env.IMGNAME }}
           path: /tmp/${{ env.IMGNAME }}
@@ -92,6 +92,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        env:
+          IMGNAME: latest-img
+        with:
+          name: ${{ env.IMGNAME }}
+          path: /tmp
 
       - name: Amazon Credentials
         uses: aws-actions/configure-aws-credentials@v1
