@@ -53,7 +53,7 @@ jobs:
               working-directory: ./SGV/lambda
               run: npm install
             - name: Package Lambda
-              run: zip -r lambda.zip lambda
+              run: zip -r lambda.zip ./SGV/lambda
 
     dockerize:
         runs-on: ubuntu-latest
