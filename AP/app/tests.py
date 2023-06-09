@@ -6,15 +6,15 @@ client = TestClient(main)
 
 class Test(TestCase):
     def test_sum1(self):
-        result = app.sum(1,2)
+        result = main.sum(1,2)
         self.assertEqual(result, 3)
 
     def test_sum2(self):
-        result = app.sum(-1, 0)
+        result = main.sum(-1, 0)
         self.assertEqual(result, -1)
 
     def test_sum2(self):
-        result = app.sum(10,-2)
+        result = main.sum(10,-2)
         self.assertEqual(result, 8)
 
     def test_main_route(self):
