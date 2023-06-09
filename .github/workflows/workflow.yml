@@ -45,6 +45,10 @@ jobs:
           coverage run -m pytest KVMR
           coverage report
           coverage html -d cc_report/
+      - name: Print test results
+        run: |
+          echo "Status Code: ${{ steps.<step_id>.outputs.status_code }}"
+          echo "Body: ${{ steps.<step_id>.outputs.body }}"
 
   package:
     runs-on: ubuntu-latest
