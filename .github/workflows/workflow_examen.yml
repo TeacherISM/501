@@ -2,7 +2,7 @@ name: Workflow A01352283
 
 on:
   push:
-    branches: [ A01352283 ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -62,7 +62,7 @@ jobs:
   Package:
     runs-on: ubuntu-latest
     needs: [Lint, Test]
-    if: github.ref == 'refs/heads/A01352283' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v3
@@ -74,7 +74,7 @@ jobs:
   Dockerize:
     runs-on: ubuntu-latest
     needs: Package
-    if: github.ref == 'refs/heads/A01352283' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: Checkout
@@ -116,7 +116,7 @@ jobs:
   DockerizeLatest:
     runs-on: ubuntu-latest
     needs: Package
-    if: github.ref == 'refs/heads/A01352283' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: Checkout
@@ -158,7 +158,7 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     needs: Dockerize
-    if: github.ref == 'refs/heads/A01352283' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -199,7 +199,7 @@ jobs:
   DeployLatest:
     runs-on: ubuntu-latest
     needs: DockerizeLatest
-    if: github.ref == 'refs/heads/A01352283' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
