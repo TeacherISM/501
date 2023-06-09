@@ -1,5 +1,5 @@
 import pytest
-import ggp.lambda_func as lambda_func
+import ggp.python3.lambda_func as lambda_func
 
 
 def test_addNums():
