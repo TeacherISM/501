@@ -3,7 +3,7 @@ name: A01025453
 on:
   push:
     branches:
-      - A01025453
+      - main
   pull_request:
     branches:
       - main
