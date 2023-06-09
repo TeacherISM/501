@@ -132,7 +132,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: d0z3f1c0/501ecr
-          IMAGE_TAG: A01658259:latest
+          IMAGE_TAG: A01658259
         run: |
           docker load --input /tmp/$IMAGE_TAG.tar
           docker image ls -a
