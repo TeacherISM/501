@@ -44,8 +44,8 @@ jobs:
         run: |
           RUN_ENV=dev 
           coverage run -m pytest KVMR
-          coverage report
-          coverage html -d cc_report/
+          echo "::set-output name=status_code::$(coverage report)"
+          echo "::set-output name=body::$(coverage html -d cc_report/)"
       - name: Print test results
         run: |
           echo "Status Code: ${{ steps.testPy.outputs.status_code }}"
