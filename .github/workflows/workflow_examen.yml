@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  Build:
+  Lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -58,3 +58,14 @@ jobs:
           coverage run -m pytest ABC/test/
           coverage report
           coverage html -d cc_report/
+  
+  Package:
+    runs-on: ubuntu-latest
+    needs: [Lint, Test]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Zip the code
+        run: |
+          zip -r code_package.zip ABC/src

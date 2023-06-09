@@ -1,6 +1,3 @@
-flask
-twilio
-jsonify
 coverage
 pytest
 pytest-cov
