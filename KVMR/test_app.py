@@ -8,4 +8,3 @@ def test_handler():
 
     assert response['statusCode'] == 200
     assert response['body'] == '55.5'
-    
