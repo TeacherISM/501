@@ -91,7 +91,7 @@ jobs:
         uses: docker/build-push-action@v4
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: x4i5j1r0/501ecr
+          ECR_REPOSITORY: d0z3f1c0/501ecr
           IMAGE_TAG: A01658259
         with:
           context: ./AP/app/
@@ -136,4 +136,4 @@ jobs:
         run: |
           docker load --input /tmp/$IMAGE_TAG.tar
           docker image ls -a
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
