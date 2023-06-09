@@ -48,7 +48,6 @@ jobs:
         env:
           AWS_REGION: us-east-1
         run: |
-          RUN_ENV=dev
           python3 test.py
   package:
     runs-on: ubuntu-latest
@@ -66,7 +65,6 @@ jobs:
           if [ -f app/requirements.txt ]; then pip install -r app/requirements.txt; fi
       - name: Create ZIP FILE
         run: |
-          RUN_ENV=dev 
           zip my-deployment-package.zip ./src/main.py
   dockerize:
     runs-on: ubuntu-latest
