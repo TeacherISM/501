@@ -25,6 +25,7 @@ jobs:
   compiling_package:
     runs-on: ubuntu-latest
     needs: [linting, unit_tests]
+    if: github.event_name != 'pull_request' # Only run on push
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -32,6 +33,7 @@ jobs:
   image_compiling:
     runs-on: ubuntu-latest
     needs: compiling_package
+    if: github.event_name != 'pull_request' # Only run on push
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -39,6 +41,7 @@ jobs:
   image_insersion:
     runs-on: ubuntu-latest
     needs: [ image_compiling, compiling_package ]
+    if: github.event_name != 'pull_request' # Only run on push
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
