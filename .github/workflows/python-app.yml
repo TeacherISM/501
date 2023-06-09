@@ -2,9 +2,12 @@ name: Test Pipeline
 
 on:
   push:
-    branches: ["*"]
+    branches: 
+        - main
+        - A01781631
   pull_request:
-    branches: ["*"]
+    branches:
+        - main
 
 permissions:
   contents: read
