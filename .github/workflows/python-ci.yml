@@ -84,7 +84,7 @@ jobs:
           IMGNAME: python-lambda
         with:
           name: ${{ env.IMGNAME }}
-          path: /tmp/${{ env.IMGNAME }}
+          path: /tmp/${{ env.IMGNAME }}.tar
 
   deploy_to_ecr:
     needs: dockerize
@@ -96,7 +96,7 @@ jobs:
       - name: Get artifact
         uses: actions/download-artifact@v3
         env:
-          IMGNAME: latest-img
+          IMGNAME: python-lambda
         with:
           name: ${{ env.IMGNAME }}
           path: /tmp
