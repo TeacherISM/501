@@ -1,4 +1,3 @@
-# test_hello_world.py
 from MHL.src import app
 
 def test_lambda_handler():
@@ -6,4 +5,4 @@ def test_lambda_handler():
     assert response == {
         "suma": 3,
     }
-    
+

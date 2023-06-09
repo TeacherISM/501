@@ -3,4 +3,3 @@ def handler(event, context):
     return {
         "suma": suma,
     }
-
