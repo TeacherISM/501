@@ -67,7 +67,7 @@ jobs:
            uses: actions/upload-artifact@v3
            env:
             images:
-              A01028728
+              a01028728
               latest
            with:
                 name: ${{ env.images}}
@@ -82,7 +82,7 @@ jobs:
             uses: actions/download-artifact@v3
             env:
               images:
-                A01028728
+                a01028728
                 latest
             with:
                 name: ${{ env.images }}
