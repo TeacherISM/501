@@ -49,7 +49,7 @@ jobs:
           AWS_REGION: us-east-1
         run: |
           RUN_ENV=dev
-          python3 app/test.py
+          python3 /AP/app/test.py
   package:
     runs-on: ubuntu-latest
     needs: test
@@ -67,7 +67,7 @@ jobs:
       - name: Create ZIP FILE
         run: |
           RUN_ENV=dev 
-          zip my-deployment-package.zip app/src/app.py
+          zip my-deployment-package.zip ./src/main.py
   dockerize:
     runs-on: ubuntu-latest
     needs: package
