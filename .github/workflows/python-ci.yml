@@ -78,6 +78,14 @@ jobs:
       - name: Build Docker image
         run: docker build -t python-lambda .
 
+      - name: Save to artifact
+        uses: actions/upload-artifact@v3
+        env:
+          IMGNAME: latest-img
+        with:
+          name: ${{ env.IMGNAME }}
+          path: /tmp/${{ env.IMGNAME }}
+
   deploy_to_ecr:
     needs: dockerize
     runs-on: ubuntu-latest
