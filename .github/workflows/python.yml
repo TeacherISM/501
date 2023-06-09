@@ -10,6 +10,8 @@ jobs:
   build_lint:
     runs-on: ubuntu-latest
 
+    if: ${{ github.event_name == 'pull_request' }}
+
     steps:
       #Install Python dependencies and requirements
       - name: Install dependencies
@@ -29,6 +31,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+
+    if: ${{ github.event_name == 'pull_request' }}
+    
     needs: build_lint
     
     steps:
