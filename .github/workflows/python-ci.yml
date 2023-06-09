@@ -76,4 +76,26 @@ jobs:
 
 
       - name: Build Docker image
-        run: docker build -t myimage .
+        run: docker build -t python-lambda .
+
+  deploy_to_ecr:
+    needs: dockerize
+    runs-on: ubuntu-latest
+
+    steps:
+        uses: actions/checkout@v3
+
+      - name: ECR Log In
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry: ${{ env.ECR_URL }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Docker Tagging
+        run: |
+          docker tag python-lambda:latest ${{ env.ECR_URL }}/my-image-name:A01633010
+          docker tag python-lambda:latest ${{ env.ECR_URL }}/my-image-name:latest
+
+      - name: Push Image
+        run: docker push ${{ env.ECR_URL }}/my-image-name:latest
