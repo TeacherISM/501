@@ -77,4 +77,4 @@ jobs:
       - name: Build distribution package
         run: |
           RUN_ENV=dev 
-          python setup.py sdist
+          python RRS/setup.py sdist
