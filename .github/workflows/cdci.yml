@@ -18,15 +18,27 @@ jobs:
 # 2
   unit_tests:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 # 3
   compiling_package:
     runs-on: ubuntu-latest
     needs: [linting, unit_tests]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 # 4
   image_compiling:
     runs-on: ubuntu-latest
     needs: compiling_package
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 # 5
   image_insersion:
     runs-on: ubuntu-latest
     needs: [ image_compiling, compiling_package ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
