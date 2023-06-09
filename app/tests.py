@@ -1,8 +1,6 @@
-from src import app
+from src import main
 from unittest import TestCase
 from fastapi.testclient import TestClient
-import sys
-sys.path.append('../src')
 
 client = TestClient(app)
 
