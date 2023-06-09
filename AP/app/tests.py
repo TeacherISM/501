@@ -2,7 +2,7 @@ from src import main
 from unittest import TestCase
 from fastapi.testclient import TestClient
 
-client = TestClient(app)
+client = TestClient(main)
 
 class Test(TestCase):
     def test_sum1(self):
