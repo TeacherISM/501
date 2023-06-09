@@ -2,7 +2,7 @@ name: Lambda function CI/CD
 
 on: 
     push: 
-        branches: ["A01025303"]
+        branches: ["main"]
     pull_request: 
         branches: ["main"]
 
