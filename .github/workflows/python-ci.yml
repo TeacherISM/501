@@ -94,8 +94,8 @@ jobs:
 
       - name: Docker Tagging
         run: |
-          docker tag python-lambda:latest ${{ env.ECR_URL }}/my-image-name:A01633010
-          docker tag python-lambda:latest ${{ env.ECR_URL }}/my-image-name:latest
+          docker tag python-lambda:latest ${{ env.ECR_URL }}/python-lambda:A01633010
+          docker tag python-lambda:latest ${{ env.ECR_URL }}/python-lambda:latest
 
       - name: Push Image
-        run: docker push ${{ env.ECR_URL }}/my-image-name:latest
+        run: docker push ${{ env.ECR_URL }}/python-lambda:latest
