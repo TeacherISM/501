@@ -84,7 +84,7 @@ jobs:
         run: zip ADV/app.zip ADV/src/app.py
 
       - name: Publish ZIP artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: package
           path: ADV/app.zip
@@ -104,7 +104,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
   
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -152,7 +152,7 @@ jobs:
           name: ${{ env.IMAGE_TAG }}
           path: /tmp
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
