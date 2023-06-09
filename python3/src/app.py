@@ -1,14 +1,9 @@
-
-
 def lambda_handler(event, context):
-    # Get the numbers from the event payload
-    numbers = event['numbers']
-    
-    # Sum up the numbers
-    total = sum(numbers)
-    
-    # Return the result
+    n1 = 11
+    n2 = 7
+
+    sum = n1+n2
     return {
         'statusCode': 200,
-        'body': total
+        'body': n1 + n2 
     }
